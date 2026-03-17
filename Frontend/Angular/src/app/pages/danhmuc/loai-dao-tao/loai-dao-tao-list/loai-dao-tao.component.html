@@ -1,0 +1,139 @@
+<div class="card">
+    <div class="card-header border-0 pt-6">
+
+
+        <!--begin::Card title-->
+        <div class="card-title">
+            <!--begin::Search-->
+            <div class="d-flex align-items-center position-relative my-1">
+                <app-keenicon name="magnifier" class="fs-3 position-absolute ms-5"></app-keenicon>
+                <input #searchInput type="text" class="form-control form-control-solid w-250px ps-12"
+                    placeholder="Tìm kiếm">
+            </div>
+            <!--end::Search-->
+        </div>
+        <!--begin::Card title-->
+
+        <!--begin::Card toolbar-->
+        <div class="card-toolbar">
+            <!--begin::Toolbar-->
+            <div class="d-flex justify-content-end">
+                <!--begin::Add user-->
+                <button type="button" class="btn jee-btn-addnew" (click)="Add()">
+                    Thêm mới
+                </button>
+                <!--end::Add user-->
+            </div>
+            <!--end::Toolbar-->
+        </div>
+        <!--end::Card toolbar-->
+    </div>
+
+    <div class="card-body pt-0">
+        <div [ngStyle]="{ height: getHeight() }" style="overflow: auto;">
+            <table mat-table class="tutorial-table" [dataSource]="dataSource" matSort matSortActive="id"
+                matSortDirection="asc" matSortDisableClear>
+                <ng-container matColumnDef="STT">
+                    <th mat-header-cell *matHeaderCellDef style="flex: 0 0 20%">
+                        {{ 'LOAIDAOTAO.stt' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let r; let i = index">
+                        <span>{{ pageSize*paginator.pageIndex+i+1}}</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Code">
+                    <th mat-header-cell *matHeaderCellDef style="flex: 0 0 20%">
+                        {{ 'LOAIDAOTAO.maloaidaotao' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 20%">{{item.MaLoaiDT}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="Title">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="flex: 0 0 30%">
+                        {{ 'LOAIDAOTAO.tenloaidaotao' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 30%">{{item.TenLoaiDT}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="TenTiengAnh">
+                    <th mat-header-cell *matHeaderCellDef style="flex: 0 0 15%">
+                        {{ 'LOAIDAOTAO.tentienganh' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 15%">{{item.TenTiengAnh}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="HinhThucDaoTao">
+                    <th mat-header-cell *matHeaderCellDef style="flex: 0 0 20%">
+                        {{ 'LOAIDAOTAO.noidung' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 20%">{{item.NoiDung}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="GhiChu">
+                    <th mat-header-cell *matHeaderCellDef style="flex: 0 0 25%">
+                        {{ 'LOAIDAOTAO.ghichu' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 25%">{{item.GhiChu}}</td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="FullName">
+                    <th mat-header-cell *matHeaderCellDef style="flex: 0 0 25%">
+                        {{ 'LOAIDAOTAO.nguoitao' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 25%">{{item.NguoiTao}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="CreatedDate">
+                    <th mat-header-cell *matHeaderCellDef style="flex: 0 0 15%">
+                        {{ 'LOAIDAOTAO.ngaytao' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 15%">{{item.NgayTao|date:'dd/MM/yyyy'}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef style="justify-content: center;">
+                        <span translate="COMMON.tacvu"></span>
+                    </th>
+                    <td mat-cell *matCellDef="let item" style="justify-content: center">
+                        <button class="btn btn-icon btn-active-light-primary w-30px h-30px me-3" (click)="Update(item)"
+                            matTooltip="{{ 'COMMON.capnhat' | translate }}">
+                            <i class="ki-duotone ki-pencil fs-3 color_edit"><span class="path1"></span><span
+                                    class="path2"></span></i>
+                        </button>
+
+                        <button class="btn btn-icon btn-active-light-danger w-30px h-30px me-3" (click)="Delete(item)"
+                            matTooltip="{{ 'COMMON.xoa' | translate }}">
+                            <i class="ki-duotone ki-trash fs-3 color_delete">
+                                <span class="path1"></span><span class="path2"></span>
+                                <span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                            </i>
+                        </button>
+
+                        <button class="btn btn-icon btn-active-light-info w-30px h-30px" (click)="View(item)"
+                            matTooltip="{{ 'COMMON.xemchitiet' | translate }}">
+                            <i class="ki-duotone ki-eye fs-3 color_view">
+                                <span class="path1"></span><span class="path2"></span>
+                                <span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                            </i>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="row.highlighted = !row.highlighted"
+                    [ngClass]="{hovered: row.hovered, highlighted: row.highlighted}" (mouseover)="row.hovered = true"
+                    (mouseout)="row.hovered = false"></tr>
+            </table>
+            <div class="pt-6" style="text-align: center;" *ngIf="!dataSource.hasItems"><span
+                    translate="COMMON.khongcodulieu"></span></div>
+        </div>
+    </div>
+
+    <div class="mat-table__bottom">
+        <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100]"
+            [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+    </div>
+</div>

@@ -1,0 +1,461 @@
+//Đã nhập
+body .class-batbuoc {
+    &.ng-invalid {
+        border-color: red;
+    }
+
+    &.ng-valid {
+        border-color: none;
+    }
+
+    &.input-thuong {
+        //input thường đã nhập
+        color: #808080;
+    }
+
+    &.input-batbuoc {
+        //input bắt buộc đã nhập
+        color: #0e72d8;
+    }
+}
+
+body textarea.mat-input-element {
+    padding: 2px 0;
+    margin: -2px 0;
+}
+
+//Error cho textbox bắt buộc nhập
+body .mat-form-field.mat-form-field-invalid {
+    .mat-input-element {
+        color: #f64e60;
+    }
+
+    .mat-form-field-label {
+        color: #f64e60;
+
+        .mat-form-field-required-marker {
+            color: #f64e60;
+        }
+    }
+
+    .mat-form-field-ripple {
+        background-color: #f64e60;
+    }
+}
+
+//==========================================================
+//====================CSS FOR POPUP=========================
+.dialog-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #16a850;
+}
+
+.dialog-footer {
+    //dùng với tag div, ko dùng với tag ng-container
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 20px;
+    padding-right: 20px;
+    border-top: 1px solid rgba(0, 0, 0, .1);
+
+    button {
+        margin-top: 20px;
+    }
+}
+
+//==========================================================
+//CSS thao tác
+.color_edit {
+    color: #1b84ff;
+}
+
+.color_delete {
+    color: #f8285a !important; //chưa chắc
+}
+
+//======================== CSS FOR CHECKBOX ==============================
+body .mat-checkbox {
+    font-family: 'Roboto';
+    // font-size: 12pt;
+    // padding: 12px 5px 12px 0px;
+    border: 0.5;
+    border-radius: 5px;
+}
+
+.mat-checkbox-checked.mat-accent .mat-checkbox-background {
+    //set color when checkbox checked and enabled
+    background-color: #3699FF !important;
+}
+
+// .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background { //checkbox trạng thái chính giữa
+//   background-color:#808080 !important;
+// }
+.mat-accent.mat-checkbox-disabled .mat-checkbox-background {
+    //set color when checkbox disabled
+    background-color: #a5a5a5 !important;
+}
+
+//==========================================================
+.icon-dynamic-search {
+    color: #808080;
+    padding: 10px 0px 12px 12px;
+    text-align: center;
+}
+
+// .avatar {
+//   height: 40px;
+//   width: 40px;
+//   margin-right: 12px;
+//   border-radius: 50%;
+// }
+.col-stt {
+    width: 48px;
+}
+
+.col-avatar {
+    width: 250px;
+}
+
+//====================CSS FOR MAT SELECT =========================
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+    color: rgb(243, 160, 7);
+    border: 0.5;
+    background-color: #e2e2e2; //808080 quá đậm
+    border-color: #D1D1D1;
+}
+
+body .mat-select-required .mat-select-value {
+    //change color mat-select value required
+    color: #3699FF !important;
+}
+
+//==========================================================
+.icon-calendar {
+    // height: 10px;
+    // width: 10px;
+    color: #808080;
+    // padding: 10px 6px 9px 0px;
+}
+
+.paginator-new {
+    // padding-right: 10px;
+    // padding-left: 10px;
+    padding-top: 7px;
+}
+
+body .kt-portlet .kt-portlet__body {
+    padding: 20px; //0px 20px => top, bot: 0, left, right: 25
+}
+
+.kt-portlet__head--lg {
+    padding-top: 9px;
+    padding-bottom: 9px;
+}
+
+.status-new {
+    text-align: center;
+    color: #ffffff;
+}
+
+//==============================Chỉnh css mat-table==========================
+
+body app-crud table.dataTable {
+    thead {
+        background-color: #f0f0f0 !important;
+        z-index: 1;
+        top: 0;
+        position: sticky;
+
+        th {
+            padding-right: 10px !important;
+            padding-left: 10px !important;
+            font-size: 14px !important;
+            color: #525e64 !important;
+        }
+    }
+
+    tbody {
+        min-height: 50px;
+
+        td {
+            padding-right: 10px !important;
+            padding-left: 10px !important;
+            font-size: 14px !important;
+        }
+    }
+}
+
+body table.tutorial-table {
+    thead {
+        background-color: #f0f0f0 !important;
+        z-index: 1;
+        top: 0;
+        position: sticky;
+
+        th {
+            padding-right: 10px !important;
+            padding-left: 10px !important;
+            font-size: 14px !important;
+            color: #525e64 !important;
+        }
+    }
+
+    tbody {
+        min-height: 50px;
+
+        td {
+            padding-right: 10px !important;
+            padding-left: 10px !important;
+            font-size: 14px !important;
+        }
+    }
+}
+
+//====================================
+//=======================CSS BUTTON======================
+.jee_button {
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 1.02rem; //12pt;
+    padding: 5px 20px 5px 20px; //top right botton left
+    border: 0.5;
+    border-color: #D1D1D1;
+    border-radius: 3px;
+    margin: 20px 20px 20px 20px;
+}
+
+.jee_btn-addcontinue {
+    background-color: #3699ff;
+    color: #ffffff;
+
+    &:hover {
+        color: #ffffff;
+        background-color: #0e72d8;
+    }
+
+    .svg-icon.svg-icon-primary svg g [fill] {
+        transition: fill 0.3s ease;
+        fill: #fff !important;
+    }
+}
+
+.jee-btn-addnew {
+    background-color: #3699ff;
+    color: #ffffff;
+
+    &:hover {
+        color: #ffffff;
+        background-color: #0e72d8;
+    }
+}
+
+.jee_btn-dropdown {
+    background-color: #1bc5bd;
+    color: #ffffff;
+
+    &:hover {
+        color: #ffffff;
+        background-color: #0bb7af;
+    }
+}
+
+.jee_btn-koduyet {
+    //flaticon2-delete
+    background-color: #d9534f;
+    color: #ffffff;
+
+    &:hover {
+        color: #ffffff;
+        background-color: #c9443f;
+    }
+}
+
+.jee_btn-duyet {
+    //flaticon2-check-mark
+    background-color: #41a0ff;
+    color: #ffffff;
+
+    &:hover {
+        color: #ffffff;
+        background-color: #0e76df;
+    }
+}
+
+.jee_btn-addclose {
+    background-color: #1bc5bd;
+    color: #ffffff;
+
+    &:hover {
+        color: #ffffff;
+        background-color: #0bb7af;
+    }
+}
+
+.jee_btn-goback {
+    background-color: #ffffff;
+    color: #5f5f5f;
+
+    &:hover {
+        color: #5f5f5f;
+        background-color: #e4e6ef;
+    }
+}
+
+.icon-repeat2 {
+    background: url("/src/assets/media/svg/icons/Clothes/Hat.svg") no-repeat top left;
+    background-size: contain;
+    cursor: pointer;
+    display: inline-block;
+    // background: url(https://songhay.blob.core.windows.net/shared-styles-svg/akyinkyin.svg) no-repeat top left;
+    // background-size: contain;
+    // cursor: pointer;
+    // display: inline-block;
+    height: 16px;
+    width: 16px;
+}
+
+.icon-repeat {
+    margin-top: 3.5px;
+    margin-right: 3.5px;
+    height: 16px;
+    width: 16px;
+}
+
+//====================CSS FOR TEXTBOX=========================
+.jee_textbox {
+    font-family: 'Roboto';
+    max-width: 300px;
+}
+
+.paginator-new {
+    // padding-right: 10px;
+    // padding-left: 10px;
+    padding-top: 7px;
+}
+
+.status-new {
+    text-align: center;
+    color: #ffffff;
+}
+
+.card.card-custom {
+    >.card-header {
+        min-height: 65px;
+
+        >.card-search {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin: auto;
+            margin-left: 0;
+        }
+    }
+
+    >.card-body {
+
+        // padding: 0;
+        th:first-child {
+            padding-left: 30px;
+        }
+
+        th {
+            box-sizing: border-box;
+            height: 48px;
+            padding: 0 6px;
+            font-weight: 600;
+            color: #808080 !important;
+            background-color: #f3f6f9 !important;
+            letter-spacing: 0 !important;
+
+            span {
+                all: unset;
+            }
+        }
+
+        td {
+            box-sizing: border-box;
+            height: 48px;
+            padding: 0 6px;
+            border-bottom: #f2f3f8 1px solid;
+        }
+
+        tr:hover {
+            background-color: #f2f3f8;
+            cursor: pointer;
+        }
+
+        app-paginator {
+            padding-left: 24px;
+            padding-right: 24px;
+        }
+    }
+}
+
+.jee-tutorial.card {
+    >.card-header {}
+
+    >.card-body {}
+
+    >.card-footer {
+        display: flex;
+        justify-content: end;
+    }
+}
+
+.modal-content {
+    .mat-form-field-underline {
+        background-color: #e6e4e4 !important;
+    }
+}
+
+.pl-16 {
+    padding-left: 16px !important;
+}
+
+pl-10 {
+    padding-left: 10px !important;
+}
+
+mat-dialog-container {
+    .card-body{
+        max-height: 80vh;
+        overflow: auto;
+    }
+}
+//=============Start tạo style css - Thiên================
+.mat-dialog-popup {
+    width: 700px !important;
+
+    .mat-dialog-container {
+        padding: 0 !important;
+    }
+}
+
+.mat-dialog-popup.with50 {
+    width: 50% !important;
+}
+
+.mat-dialog-popup.with60 {
+    width: 60% !important;
+}
+
+.mat-dialog-popup.with70 {
+    width: 70% !important;
+}
+
+.mat-dialog-popup.with80 {
+    width: 80% !important;
+}
+
+//================Css SWL - thông báo =============
+.swl-custom-height {
+    height: 230px;
+    max-height: 90vh;
+}
+
+.swl-confirm-btn {
+    background-color: #3699ff !important;
+    border-color: #3699ff !important;
+    box-shadow: none !important
+}

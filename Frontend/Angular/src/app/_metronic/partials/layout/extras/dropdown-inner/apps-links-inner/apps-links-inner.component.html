@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="item" *ngFor="let app of listApp" [ngStyle]="{'display':app.IsShowApp ? '' : 'none'}">
+     <div class="d-block py-5 px-5 text-center" style="height: 80px;">
+      <div *ngIf="app.Icon == '' || app.Icon == null">
+        <a class="d-block rectangle" href="{{app.BackendURL}}" target="_blank"></a>
+      </div>
+      <div *ngIf="app.Icon != '' && app.Icon != null">
+        <a href="{{app.BackendURL}}" target="_blank">
+          <img src="{{app.Icon}}" height="51" width="51">
+        </a>
+      </div>
+    </div>
+    <div class="row text-center" style="display: block; height: 30px;">{{app.AppName}}</div>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+@media screen and (max-width: 1400px) and (min-height: 400px) {
+  .container {
+    height: calc(100vh - 95px);
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+@media screen and (max-width: 1600px) and (min-height: 400px) {
+  .container {
+    height: calc(100vh - 95px);
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+@media screen and (min-width: 1600px) and (min-height: 400px) {
+  .container {
+    height: calc(100vh - 95px);
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+@media screen and (max-width: 1300px) and (min-height: 400px) {
+  .container {
+    height: calc(100vh - 95px);
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+.unread {
+  color: #000000;
+}
+
+.read {
+  color: #808080;
+}
+
+.read:hover {
+  color: #7c7c7c;
+}
+
+.time-unread {
+  color: rgb(10, 170, 10);
+}
+
+.time-read {
+  color: rgb(124, 231, 124);
+}
+
+.dot {
+  height: 8px;
+  width: 8px;
+  background-color: rgb(10, 170, 10);
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 70px;
+  position: absolute;
+  left: 280px;
+}

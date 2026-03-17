@@ -1,0 +1,96 @@
+<div id="kt_drawer_user" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="user" data-kt-drawer-activate="true"
+  data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'300px', 'md': '375px'}" data-kt-drawer-direction="end"
+  data-kt-drawer-toggle="#kt_drawer_user_toggle" data-kt-drawer-close="#kt_drawer_user_close">
+  <div class="card w-100 rounded-0" id="kt_drawer_user_messenger">
+    <div class="card-header pe-5" id="kt_drawer_user_messenger_header">
+      <div class="card-title">
+        <div class="d-flex justify-content-center flex-column me-3">
+          <span class="
+              fs-4
+              fw-bolder
+              text-gray-900 text-hover-primary
+              me-1
+              mb-2
+              lh-1
+              cursor-pointer
+            ">{{
+              'COMMON.thongtincanhan' | translate
+              }}</span>
+        </div>
+      </div>
+      <div class="card-toolbar">
+        <div class="me-2">
+          <button class="btn btn-sm btn-icon btn-active-light-primary" data-kt-menu-trigger="click"
+            data-kt-menu-placement="bottom-end" data-kt-menu-flip="top-end">
+          </button>
+        </div>
+        <div class="btn btn-sm btn-icon btn-active-light-primary" id="kt_drawer_user_close">
+          <span class="svg-icon fs-2"></span>
+          <app-keenicon name="cross" class="fs-2"></app-keenicon>
+        </div>
+      </div>
+    </div>
+    <!--begin::Content-->
+    <div class="offcanvas-content p-xl-8">
+      <!--begin::Thông tin cá nhân-->
+      <div class="d-flex align-items-center">
+        <div class="symbol symbol-100">
+          <ngx-avatars [size]="80" src="{{ _user['user']['customData']['personalInfo'].Avatar }}"
+            *ngIf="_user['user']['customData']['personalInfo'].Avatar; else bindText">
+          </ngx-avatars>
+          <ng-template #bindText>
+            <ngx-avatars [textSizeRatio]="2.5" ngbTooltip="{{ _user['user']['customData']['personalInfo'].Fullname }}"
+              [size]="80" [name]="_user['user']['customData']['personalInfo'].Name.slice(0, 1)"
+              bgColor="{{ _user['user']['customData']['personalInfo'].BgColor }}">
+            </ngx-avatars>
+          </ng-template>
+        </div>
+        <div class="d-flex flex-column ms-xxl-5" style="line-height: 2">
+          <div class="hoten">
+            {{ _user['user']['customData']['personalInfo'].Fullname }}
+          </div>
+          <div class="chucvu">
+            {{ _user['user']['customData']['personalInfo'].Jobtitle }}
+          </div>
+        </div>
+      </div>
+      <div class="d-flex align-items-center mt-5" style="justify-content: flex-end">
+        <div class="symbol symbol-100 mr-5"></div>
+        <div class="d-flex flex-column">
+          <div class="navi mt-2">
+            <a class="btn btn-sm quanlytaikhoan py-2 px-5 cursor-pointer" (click)="quanlytaikhoan()">{{
+              'COMMON.quanlytaikhoan' | translate
+              }}</a>
+            <a class="btn btn-sm dangxuat py-2 px-5 cursor-pointer" (click)="logout()">{{ 'COMMON.dangxuat' | translate
+              }}</a>
+          </div>
+        </div>
+      </div>
+      <!--end::Thông tin cá nhân-->
+      <div class="separator mt-8 mb-5" style="border: 1px solid #d1d1d1"></div>
+
+      <!--begin::Nhắc nhở-->
+      <div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
+        <span class="nhacnho" translate="COMMON.nhacnho"></span>
+      </div>
+      <div class="row link" *ngFor="let app of listNhacNho" (click)="ChangeLink(app)">
+        <div class="col-md-9 kt--margin-bottom-10-mobile">
+          <span class="svg-icon menu-icon" style="padding: 0 10px">
+            <i *ngIf="app.WebAppIcon" class="kt-menu__link-icon" [ngClass]="app.WebAppIcon"></i>
+          </span>
+          <span class="nhacnho-text">{{ app.LoaiNhacNho }}</span>
+        </div>
+        <div class="col-md-3 kt--margin-bottom-10-mobile" style="text-align: end">
+          <span class="soluong">{{ app.Soluong }}</span>
+          <span class="svg-icon menu-icon" style="padding: 0 10px">
+            <i class="ki ki-bold-arrow-next icon-xs" style="color: #050505; margin-left: 20px"></i>
+          </span>
+        </div>
+      </div>
+      <!--end::Nhắc nhở-->
+
+    </div>
+
+    <!--end::Content-->
+  </div>
+</div>
