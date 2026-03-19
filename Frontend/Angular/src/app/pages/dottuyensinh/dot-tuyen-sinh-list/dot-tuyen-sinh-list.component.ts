@@ -1,12 +1,12 @@
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, fromEvent, merge, tap } from 'rxjs';
-import { LoaiDaoTaoService } from '../services/loai-dao-tao-service';
+import { DotTuyenSinhService } from '../services/dot-tuyen-sinh.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { LoaiDaoTaoModel } from '../model/loai-dao-tao.model';
+import { DotTuyenSinhModel } from '../model/dot-tuyen-sinh.model';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { QueryParamsModel } from 'src/app/_metronic/core/models/query-models/query-params.model';
-import { LoaiDaoTaoDataSource } from '../model/data-source/loai-dao-tao-datasource';
+import { DotTuyenSinhDataSource } from '../model/data-sources/dot-tuyen-sinh.datasource';
 import { MatPaginator, MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { CommonModule } from '@angular/common';
@@ -17,27 +17,29 @@ import { SharedModule } from 'src/app/_metronic/shared/shared.module';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { TokenStorage } from 'src/app/modules/auth/services/token-storage.service';
 import { MatPaginatorIntlCustom } from 'src/app/modules/auth/services/config-mat-page';
-import { LoaiDaoTaoEditDialogComponent } from '../loai-dao-tao-edit/loai-dao-tao-edit.dialog.component';
+import { DotTuyenSinhEditDialogComponent } from '../dot-tuyen-sinh-edit/dot-tuyen-sinh-edit.dialog.component';
 import { LayoutUtilsService } from 'src/app/_metronic/core/utils/layout-utils.service';
+import { BacDaoTaoModel } from '../../danhmuc/bac-dao-tao/model/bac-dao-tao.model';
 
 @Component({
-    selector: 'app-loai-dao-tao-list',
+    selector: 'app-dot-tuyen-sinh-list',
     standalone: true,
-    providers: [LoaiDaoTaoService, LayoutUtilsService, TokenStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCustom }],
+    providers: [DotTuyenSinhService, LayoutUtilsService, TokenStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCustom }],
     imports: [CommonModule, ReactiveFormsModule, MatPaginatorModule, MatSortModule, MatIconModule, TranslateModule, MatTooltipModule, MatTableModule, SharedModule],
-    templateUrl: './loai-dao-tao.component.html',
+    templateUrl: './dot-tuyen-sinh-list.component.html',
 })
-export class LoaiDaoTaoTableListComponent implements OnInit, AfterViewInit, OnDestroy {
-    private LoaiDaoTaoService = inject(LoaiDaoTaoService);
+export class DotTuyenSinhTableListComponent implements OnInit, AfterViewInit, OnDestroy {
+    private DotTuyenSinhService = inject(DotTuyenSinhService);
     private translate = inject(TranslateService);
     public dialog = inject(MatDialog);
     private tokenStorage = inject(TokenStorage);
     private layoutUtilsService = inject(LayoutUtilsService);
 
     itemModel: any;
-    dataSource: LoaiDaoTaoDataSource;
+    dataSource: DotTuyenSinhDataSource;
     dataResult: any[] = [];
-    displayedColumns = ['STT', 'Code', 'Title', 'TenTiengAnh', 'HinhThucDaoTao', 'GhiChu', 'FullName', 'CreatedDate', 'actions'];
+    //displayedColumns = ['STT', 'Code', 'Title', 'TenTiengAnh', 'HinhThucDaoTao', 'GhiChu', 'FullName', 'CreatedDate', 'actions'];
+    displayedColumns = ['STT', 'NamHoc', 'Dot', 'TenDotTS', 'KhoaHoc', 'ThoiGianNhanHS', 'NgayInGBTT', 'ThoiGianLayHS', 'NgayNhapHocDK', 'GhiChu', 'NguoiTao', 'NgayTao', 'actions']
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
     @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
@@ -72,7 +74,7 @@ export class LoaiDaoTaoTableListComponent implements OnInit, AfterViewInit, OnDe
             )
             .subscribe();
 
-        this.dataSource = new LoaiDaoTaoDataSource(this.LoaiDaoTaoService);
+        this.dataSource = new DotTuyenSinhDataSource(this.DotTuyenSinhService);
         this.dataSource.entitySubject.subscribe(res => this.dataResult = res);
         this.loadDataList();
     }
@@ -80,7 +82,7 @@ export class LoaiDaoTaoTableListComponent implements OnInit, AfterViewInit, OnDe
     loadDataList() {
 
         const queryParams = new QueryParamsModel(
-            this.filterConfiguration(), //Trả về từ khóa cần lọc ở đây
+            this.filterConfiguration(),
             this.sort.direction,
             this.sort.active,
             this.paginator.pageIndex,
@@ -146,7 +148,7 @@ export class LoaiDaoTaoTableListComponent implements OnInit, AfterViewInit, OnDe
         };
         Swal.fire(successAlert).then((clicked) => {
             if (clicked.isConfirmed) {
-                this.LoaiDaoTaoService.delete(item.id).subscribe((res) => {
+                this.DotTuyenSinhService.delete(item.RowId).subscribe((res) => {
                     if (res && res.status == 1) {
                         this.loadDataList();
                         this.layoutUtilsService.showSuccess(res.error.message);
@@ -159,9 +161,9 @@ export class LoaiDaoTaoTableListComponent implements OnInit, AfterViewInit, OnDe
     }
 
     edit(id: number) {
-        const item = new LoaiDaoTaoModel();
+        const item = new DotTuyenSinhModel();
         item.clear(); // Set all defaults fields
-        item.id = id;
+        item.Id = id;
         this.Update(item);
     }
 
@@ -175,12 +177,12 @@ export class LoaiDaoTaoTableListComponent implements OnInit, AfterViewInit, OnDe
     }
 
     Add() {
-        const item = new LoaiDaoTaoModel();
+        const item = new DotTuyenSinhModel();
         item.clear(); // Set all defaults fields
         this.Update(item);
     }
 
-    Update(_item: LoaiDaoTaoModel) {
+    Update(_item: DotTuyenSinhModel) {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.width = '600px';
         dialogConfig.height = 'auto';
@@ -189,13 +191,15 @@ export class LoaiDaoTaoTableListComponent implements OnInit, AfterViewInit, OnDe
             isView: false // Add this flag for edit mode
         };
 
-        const dialogRef = this.dialog.open(LoaiDaoTaoEditDialogComponent, dialogConfig);
+        //xóa
+        console.log('dialogConfig', dialogConfig);
+
+        const dialogRef = this.dialog.open(DotTuyenSinhEditDialogComponent, dialogConfig);
         dialogRef.afterClosed().subscribe(result => {
             this.loadDataList();
         });
     }
-
-    View(_item: LoaiDaoTaoModel) {
+    View(_item: DotTuyenSinhModel) {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.width = '600px';
         dialogConfig.height = 'auto';
@@ -204,7 +208,10 @@ export class LoaiDaoTaoTableListComponent implements OnInit, AfterViewInit, OnDe
             isView: true // Add this flag for view mode
         };
 
-        const dialogRef = this.dialog.open(LoaiDaoTaoEditDialogComponent, dialogConfig);
+        //xóa
+        console.log("item này ", _item)
+
+        const dialogRef = this.dialog.open(DotTuyenSinhEditDialogComponent, dialogConfig);
         dialogRef.afterClosed().subscribe(result => {
             this.loadDataList();
         });
@@ -215,5 +222,3 @@ export class LoaiDaoTaoTableListComponent implements OnInit, AfterViewInit, OnDe
         return tmp_height + 'px';
     }
 }
-
-

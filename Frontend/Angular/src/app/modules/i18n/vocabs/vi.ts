@@ -66,6 +66,26 @@ export const locale = {
       nguoitao: 'Người tạo',
       ngaytao: 'Ngày tạo',
       stt: 'Số thứ tự'
+    },
+    DOTTUYENSINH: {
+      stt: 'STT',
+      namhoc: 'Năm học',
+      dot: 'Đợt',
+      tendotTS: 'Tên đợt tuyển sinh',
+      khoahoc: 'Khóa học',
+      thoigiannhanHS: 'Thời gian nhận hồ sơ',
+      ngayinGBTT: 'Ngày in GBTT',
+      thoigianlayHS: 'Thời gian lấy hồ sơ',
+      ngaynhaphocDK: 'Ngày nhập học dự kiến',
+      ghichu: 'Ghi chú',
+      nguoitao: 'Người tạo',
+      ngaytao: 'Ngày tạo',
+      thoigiannhanHS_tungay: 'Thời gian nhận hồ sơ từ ngày',
+      thoigiannhanHS_denngay: 'Thời gian nhận hồ sơ đến ngày',
+      thoigianlayHS_tungay: 'Thời gian lấy hồ sơ từ ngày',
+      thoigianlayHS_denngay: 'Thời gian lấy hồ sơ đến ngày',
+      hienthi: 'Hiển thị',
+      khongchon: 'Không chọn'
     }
   },
 };

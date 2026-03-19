@@ -5,7 +5,7 @@ using System.Data;
 
 namespace SampleCodeAPI.Business
 {
-    public class BusLoaiDaoTao
+    public class BusDotTuyenSinh
     {
         public static async Task<object> GetList(QueryParams query, string connect)
         {
@@ -15,12 +15,12 @@ namespace SampleCodeAPI.Business
             {
 
                 SqlConditions Conds = new SqlConditions();
-                string sqlq = "", orderByStr = " TenLoaiDT ", whereStr = " Isdel = 0 ";
+                string sqlq = "", orderByStr = " TenDotTS ", whereStr = " Isdel = 0 ";
                 Dictionary<string, string> sortableFields = new Dictionary<string, string>
                 {
-                    { "MaLoaiDT", "MaLoaiDT"},
-                    { "TenTiengAnh", "TenTiengAnh"},
-                    { "TenLoaiDaoTao", "TenLoaiDaoTao"},
+                    { "RowId", "RowId"},
+                    { "Code", "Code"},
+                    { "Title", "Title"},
                 };
 
                 if (!string.IsNullOrEmpty(query.sortField) && sortableFields.ContainsKey(query.sortField))
@@ -29,10 +29,10 @@ namespace SampleCodeAPI.Business
                 }
                 if (!string.IsNullOrEmpty(query.filter["keyword"]))
                 {
-                    whereStr += " and (MaLoaiDT like @kw or TenLoaiDT like @kw or TenTiengAnh like @kw)";
+                    whereStr += " and (Code like @kw or Title like @kw)";
                     Conds.Add("kw", "%" + query.filter["keyword"] + "%");
                 }
-                sqlq = $@"select count(*) AS tong from (select * from LoaiDaoTao
+                sqlq = $@"select count(*) AS tong from (select * from DotTuyenSinh
                                   where {whereStr} ) as a";
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
                 var total = int.Parse(dt.Rows[0]["tong"].ToString());
@@ -64,13 +64,13 @@ namespace SampleCodeAPI.Business
 
                     if (query.page > 1)
                     {
-                        sqlq = $@"  select LoaiDaoTao.* from LoaiDaoTao
+                        sqlq = $@"  select DotTuyenSinh.* from DotTuyenSinh
                                   where {whereStr} order by {orderByStr} 
                                   OFFSET @firstRecord ROWS FETCH NEXT @record ROWS ONLY";
                     }
                     else if (query.page == 1)
                     {
-                        sqlq = $@"  select top(@record) LoaiDaoTao.* from LoaiDaoTao
+                        sqlq = $@"  select top(@record) DotTuyenSinh.* from DotTuyenSinh
                                   where {whereStr} order by {orderByStr} ";
 
                     }
@@ -79,21 +79,39 @@ namespace SampleCodeAPI.Business
 
                 }
                 dt = cnn.CreateDataTable(sqlq, Conds);
-
+                                
                 var data = (from r in dt.AsEnumerable()
                             select new
                             {
-                                //RowId = r["RowId"],
-                                //Code = r["Code"],
-                                id = r["id"].ToString(),
-                                MaLoaiDT = r["MaLoaiDT"].ToString(),
-                                TenLoaiDT = r["TenLoaiDT"].ToString(),
-                                TenTiengAnh = !String.IsNullOrEmpty(r["TenTiengAnh"].ToString()) ? r["TenTiengAnh"].ToString() : "",
-                                NoiDung = r["NoiDung"].ToString(),
-                                SoThuTu = r["SoThuTu"].ToString(),                                
-                                GhiChu = !String.IsNullOrEmpty(r["GhiChu"].ToString()) ? r["GhiChu"].ToString() : "",
-                                NguoiTao = r["NguoiTao"].ToString(),
-                                NgayTao = r["NgayTao"].ToString(),
+                               
+                                Id = r["Id"] != DBNull.Value ? Convert.ToInt32(r["Id"]) : 0,
+
+                                NamHoc = r["NamHoc"] != DBNull.Value ? Convert.ToInt16(r["NamHoc"]) : (short?)null,
+
+                                Dot = r["Dot"] != DBNull.Value ? Convert.ToByte(r["Dot"]) : (byte?)null,
+
+                                TenDotTS = r["TenDotTS"]?.ToString(), // String tự động nhận null nếu r["TenDotTS"] là DBNull
+
+                                KhoaHoc = r["KhoaHoc"]?.ToString(),
+
+                                ThoiGianNhanHSTuNgay = r["ThoiGianNhanHSTuNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+                                ThoiGianNhanHSDengay = r["ThoiGianNhanHSDenNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+
+                                NgayInGBTT = r["NgayInGBTT"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+
+                                ThoiGianLayHSTuNgay = r["ThoiGianLayHSTuNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+                                ThoiGianLayHSDenNgay = r["ThoiGianLayHSDenNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+
+                                NgayNhapHocDK = r["NgayNhapHocDK"] != DBNull.Value ? Convert.ToDateTime(r["NgayNhapHocDK"]) : (DateTime?)null,
+
+                                GhiChu = r["GhiChu"]?.ToString(),
+
+                                NguoiTao = r["NguoiTao"]?.ToString(),
+
+                                NgayTao = r["NgayTao"] != DBNull.Value ? Convert.ToDateTime(r["NgayTao"]) : (DateTime?)null,
+
+                                Isdel = r["Isdel"] != DBNull.Value ? Convert.ToBoolean(r["Isdel"]) : false,
+
                             }).ToList();
 
                 model.data = data;
@@ -112,7 +130,7 @@ namespace SampleCodeAPI.Business
 
                 SqlConditions Conds = new SqlConditions();
                 string sqlq = "";
-                sqlq = $@" select * from LoaiDaoTao
+                sqlq = $@" select * from DotTuyenSinh
                                   where id=@id ";
                 Conds.Add("id", id);
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
@@ -141,15 +159,36 @@ namespace SampleCodeAPI.Business
                 var data = (from r in dt.AsEnumerable()
                             select new
                             {
-                                id = r["id"].ToString(),
-                                MaLoaiDT = r["MaLoaiDT"].ToString(),
-                                TenLoaiDT = r["TenLoaiDT"].ToString(),
-                                TenTiengAnh = !String.IsNullOrEmpty(r["TenTiengAnh"].ToString()) ? r["TenTiengAnh"].ToString() : "",
-                                NoiDung = r["NoiDung"].ToString(),
-                                SoThuTu = r["SoThuTu"].ToString(),
-                                GhiChu = !String.IsNullOrEmpty(r["GhiChu"].ToString()) ? r["GhiChu"].ToString() : "",
-                                NguoiTao = r["NguoiTao"].ToString(),
-                                NgayTao = r["NgayTao"].ToString(),
+
+
+                                Id = r["Id"] != DBNull.Value ? Convert.ToInt32(r["Id"]) : 0,
+
+                                NamHoc = r["NamHoc"] != DBNull.Value ? Convert.ToInt16(r["NamHoc"]) : (short?)null,
+
+                                Dot = r["Dot"] != DBNull.Value ? Convert.ToByte(r["Dot"]) : (byte?)null,
+
+                                TenDotTS = r["TenDotTS"]?.ToString(), // String tự động nhận null nếu r["TenDotTS"] là DBNull
+
+                                KhoaHoc = r["KhoaHoc"]?.ToString(),
+
+                                ThoiGianNhanHSTuNgay = r["ThoiGianNhanHSTuNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+                                ThoiGianNhanHSDengay = r["ThoiGianNhanHSDenNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+
+                                NgayInGBTT = r["NgayInGBTT"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+
+                                ThoiGianLayHSTuNgay = r["ThoiGianLayHSTuNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+                                ThoiGianLayHSDenNgay = r["ThoiGianLayHSDenNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+
+                                NgayNhapHocDK = r["NgayNhapHocDK"] != DBNull.Value ? Convert.ToDateTime(r["NgayNhapHocDK"]) : (DateTime?)null,
+
+                                GhiChu = r["GhiChu"]?.ToString(),
+
+                                NguoiTao = r["NguoiTao"]?.ToString(),
+
+                                NgayTao = r["NgayTao"] != DBNull.Value ? Convert.ToDateTime(r["NgayTao"]) : (DateTime?)null,
+
+                                Isdel = r["Isdel"] != DBNull.Value ? Convert.ToBoolean(r["Isdel"]) : false,
+
                             }).FirstOrDefault();
 
                 model.data = data;
@@ -157,7 +196,7 @@ namespace SampleCodeAPI.Business
                 return model;
             }
         }
-        public static async Task<BaseModel<object>> Insert(LoaiDaoTaoModel data, string connect, UserJWT loginData)
+        public static async Task<BaseModel<object>> Insert(DotTuyenSinhModel data, string connect, UserJWT loginData)
         {
             ErrorModel error = new ErrorModel();
             BaseModel<object> model = new BaseModel<object>();
@@ -174,32 +213,38 @@ namespace SampleCodeAPI.Business
                 return model;
             }
 
-            if (!CheckTrungTen(connect, data.MaLoaiDT.ToString()))
+            if (!CheckTrungTen(connect, data.TenDotTS))
             {
                 model.status = 0;
                 model.error = new ErrorModel
                 {
-                    message = "Mã loại đào tạo không được trùng" //_954
+                    message = "Dữ liệu đã tồn tại" //_954
                 };
                 return model;
             }
 
             using (DpsConnection cnn = new DpsConnection(connect))
             {
-                val.Add("MaLoaiDT", data.MaLoaiDT);
-                val.Add("TenLoaiDT", data.TenLoaiDT);
-                val.Add("TenTiengAnh", data.TenTiengAnh);
-                val.Add("NoiDung", data.NoiDung);
-                val.Add("SoThuTu", data.SoThuTu);
+                val.Add("NamHoc", data.NamHoc);
+                val.Add("Dot", data.Dot);
+                val.Add("TenDotTS", data.TenDotTS);
+                val.Add("KhoaHoc", data.KhoaHoc);
+                val.Add("ThoiGianNhanHSTuNgay", data.ThoiGianNhanHSTuNgay);
+                val.Add("ThoiGianNhanHSDenNgay", data.ThoiGianNhanHSDenNgay);
+                val.Add("NgayInGBTT", data.NgayInGBTT);
+                val.Add("ThoiGianLayHSTuNgay", data.ThoiGianLayHSTuNgay);
+                val.Add("ThoiGianLayHSDenNgay", data.ThoiGianLayHSDenNgay);
+                val.Add("NgayNhapHocDK", data.NgayNhapHocDK);
                 val.Add("GhiChu", data.GhiChu);
-                val.Add("IsDel", data.IsDel);
-                val.Add("NguoiTao", loginData.customdata.jeeAccount.customerID);
-                val.Add("NgayTao", DateTime.UtcNow);
 
-                if (cnn.Insert(val, "LoaiDaoTao") == 1)
+                val.Add("Isdel", data.Isdel);
+                val.Add("NguoiTao", loginData.customdata.jeeAccount.userID);
+                val.Add("NgayTao", DateTime.Now); 
+
+                if (cnn.Insert(val, "DotTuyenSinh") == 1)
                 {
-                    //int id = Convert.ToInt32(cnn.ExecuteScalar("SELECT IDENT_CURRENT ('LoaiDaoTao') AS Current_Identity;  ").ToString());
-                    //data.RowId = id;
+                    int id = Convert.ToInt32(cnn.ExecuteScalar("SELECT IDENT_CURRENT ('DotTuyenSinh') AS Current_Identity;  ").ToString());
+                    data.Id = id;
 
                     model.status = 1;
                     model.error = new ErrorModel
@@ -221,7 +266,7 @@ namespace SampleCodeAPI.Business
             //Bổ sung ghi log
             return model;
         }
-        public static async Task<BaseModel<object>> Update(LoaiDaoTaoModel data, string connect, UserJWT loginData)
+        public static async Task<BaseModel<object>> Update(DotTuyenSinhModel data, string connect, UserJWT loginData)
         {
             BaseModel<object> model = new BaseModel<object>();
             BaseModel<string> result_up = new BaseModel<string>();
@@ -238,25 +283,32 @@ namespace SampleCodeAPI.Business
                 return model;
             }
 
-            if (!CheckTrungTen(connect, data.MaLoaiDT, data.id.ToString()))
+            if (!CheckTrungTen(connect, data.TenDotTS, data.Id.ToString()))
             {
                 model.status = 0;
                 model.error = new ErrorModel
                 {
-                    message = "Mã loại đào tạo không được trùng"
+                    message = "Dữ liệu đã tồn tại"
                 };
                 return model;
             }
             using (DpsConnection cnn = new DpsConnection(connect))
             {
-                val.Add("MaLoaiDT", data.MaLoaiDT);
-                val.Add("TenLoaiDT", data.TenLoaiDT);
-                val.Add("TenTiengAnh", data.TenTiengAnh);
-                val.Add("NoiDung", data.NoiDung);
-                val.Add("SoThuTu", data.SoThuTu);
+                val.Add("NamHoc", data.NamHoc);
+                val.Add("Dot", data.Dot);
+                val.Add("TenDotTS", data.TenDotTS);
+                val.Add("KhoaHoc", data.KhoaHoc);
+                val.Add("ThoiGianNhanHSTuNgay", data.ThoiGianNhanHSTuNgay);
+                val.Add("ThoiGianNhanHSDenNgay", data.ThoiGianNhanHSDenNgay);
+                val.Add("NgayInGBTT", data.NgayInGBTT);
+                val.Add("ThoiGianLayHSTuNgay", data.ThoiGianLayHSTuNgay);
+                val.Add("ThoiGianLayHSDenNgay", data.ThoiGianLayHSDenNgay);
+                val.Add("NgayNhapHocDK", data.NgayNhapHocDK);
                 val.Add("GhiChu", data.GhiChu);
 
-                if (cnn.Update(val, new SqlConditions { { "id", data.id } }, "LoaiDaoTao") == 1)
+                // Các trường hệ thống và trạng thái
+                val.Add("Isdel", data.Isdel);
+                if (cnn.Update(val, new SqlConditions { { "id", data.Id } }, "DotTuyenSinh") == 1)
                 {
                     model.status = 1;
                     model.error = new ErrorModel
@@ -285,10 +337,8 @@ namespace SampleCodeAPI.Business
             {
                 Hashtable val = new Hashtable();
                 val.Add("IsDel", 1);
-                //val.Add("DeletedBy", loginData.customdata.jeeAccount.userID);
-                //val.Add("DeletedDate", DateTime.UtcNow);
-
-                if (cnn.Update(val, new SqlConditions { { "id", id } }, "LoaiDaoTao") == 1)
+               
+                if (cnn.Update(val, new SqlConditions { { "id", id } }, "DotTuyenSinh") == 1)
                 {
                     model.status = 1;
                     model.error = new ErrorModel
@@ -316,7 +366,7 @@ namespace SampleCodeAPI.Business
             using (DpsConnection cnn = new DpsConnection(_ConnectionString))
             {
                 SqlConditions conds = new SqlConditions();
-                string sql = "select * from LoaiDaoTao where TenLoaiDT = @Code  and IsDel=0";
+                string sql = "select * from DotTuyenSinh where TenDotTS = @Code  and IsDel=0";
                 conds.Add("Code", name);
 
                 if (!string.IsNullOrEmpty(Id))

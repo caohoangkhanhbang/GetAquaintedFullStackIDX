@@ -7,7 +7,7 @@
         public string TenLoaiDT { get; set; }
         public string TenTiengAnh { get; set; }
         public string NoiDung { get; set; }
-        public int STT { get; set; }
+        public int SoThuTu { get; set; }
         public string GhiChu { get; set; }
         public bool IsDel { get; set; }
         public string NguoiTao { get; set; }

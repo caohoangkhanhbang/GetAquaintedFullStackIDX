@@ -6,7 +6,7 @@ export class LoaiDaoTaoModel extends BaseModel {
     TenLoaiDT: string;
     TenTiengAnh: string;
     NoiDung: string;
-    STT: number;
+    SoThuTu: number;
     GhiChu: string;
     IsDel: boolean;
     NguoiTao: string;
@@ -18,7 +18,7 @@ export class LoaiDaoTaoModel extends BaseModel {
         this.TenLoaiDT = '';
         this.TenTiengAnh = '';
         this.NoiDung = '';
-        this.STT = 0;
+        this.SoThuTu = 0;
         this.GhiChu = '';
         this.IsDel = false;
         this.NguoiTao = '';
