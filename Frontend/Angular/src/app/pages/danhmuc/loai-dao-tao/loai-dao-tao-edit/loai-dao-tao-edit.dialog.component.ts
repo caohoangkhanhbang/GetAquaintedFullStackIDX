@@ -50,8 +50,6 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
     /** LOAD DATA */
     ngOnInit() {
         this.item = this.data.item;
-        //Xóa
-        console.log('item', this.item);
         this.reset();
         if (this.item.id > 0) {
             this.viewLoading = true;

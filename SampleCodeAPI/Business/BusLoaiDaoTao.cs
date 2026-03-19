@@ -18,9 +18,9 @@ namespace SampleCodeAPI.Business
                 string sqlq = "", orderByStr = " TenLoaiDT ", whereStr = " Isdel = 0 ";
                 Dictionary<string, string> sortableFields = new Dictionary<string, string>
                 {
-                    { "RowId", "RowId"},
-                    { "Code", "Code"},
-                    { "Title", "Title"},
+                    { "MaLoaiDT", "MaLoaiDT"},
+                    { "TenTiengAnh", "TenTiengAnh"},
+                    { "TenLoaiDaoTao", "TenLoaiDaoTao"},
                 };
 
                 if (!string.IsNullOrEmpty(query.sortField) && sortableFields.ContainsKey(query.sortField))
@@ -29,7 +29,7 @@ namespace SampleCodeAPI.Business
                 }
                 if (!string.IsNullOrEmpty(query.filter["keyword"]))
                 {
-                    whereStr += " and (Code like @kw or Title like @kw)";
+                    whereStr += " and (MaLoaiDT like @kw or TenLoaiDT like @kw or TenTiengAnh like @kw)";
                     Conds.Add("kw", "%" + query.filter["keyword"] + "%");
                 }
                 sqlq = $@"select count(*) AS tong from (select * from LoaiDaoTao

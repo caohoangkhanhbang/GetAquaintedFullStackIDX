@@ -80,7 +80,7 @@ export class LoaiDaoTaoTableListComponent implements OnInit, AfterViewInit, OnDe
     loadDataList() {
 
         const queryParams = new QueryParamsModel(
-            this.filterConfiguration(),
+            this.filterConfiguration(), //Trả về từ khóa cần lọc ở đây
             this.sort.direction,
             this.sort.active,
             this.paginator.pageIndex,

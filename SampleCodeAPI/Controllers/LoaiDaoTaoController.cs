@@ -48,7 +48,7 @@ namespace SampleCodeAPI.Controllers
         [HttpGet]
         [Route("list")]
         public async Task<object> GetList([FromQuery] QueryParams query)
-        {
+     {
             //UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
             //if (loginData == null)
             //    return JsonResultCommon.DangNhap();
