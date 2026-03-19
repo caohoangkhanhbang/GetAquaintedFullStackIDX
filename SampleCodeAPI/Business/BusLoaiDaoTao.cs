@@ -109,7 +109,6 @@ namespace SampleCodeAPI.Business
             ErrorModel error = new ErrorModel();
             using (DpsConnection cnn = new DpsConnection(connect))
             {
-
                 SqlConditions Conds = new SqlConditions();
                 string sqlq = "";
                 sqlq = $@" select * from LoaiDaoTao
@@ -179,7 +178,7 @@ namespace SampleCodeAPI.Business
                 model.status = 0;
                 model.error = new ErrorModel
                 {
-                    message = "Mã loại đào tạo không được trùng" //_954
+                    message = "Mã loại đào tạo không được trùng"
                 };
                 return model;
             }
@@ -285,8 +284,6 @@ namespace SampleCodeAPI.Business
             {
                 Hashtable val = new Hashtable();
                 val.Add("IsDel", 1);
-                //val.Add("DeletedBy", loginData.customdata.jeeAccount.userID);
-                //val.Add("DeletedDate", DateTime.UtcNow);
 
                 if (cnn.Update(val, new SqlConditions { { "id", id } }, "LoaiDaoTao") == 1)
                 {

@@ -24,9 +24,6 @@ namespace SampleCodeAPI.Controllers
         private readonly MinioObject _minioClient = minioClient;
         private readonly IConnectionService _connection = connectionService;
 
-        
-
-
         [HttpGet]
         [Route("list")]
         public async Task<object> GetList([FromQuery] QueryParams query)
@@ -91,7 +88,7 @@ namespace SampleCodeAPI.Controllers
             UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
             if (loginData == null)
                 return JsonResultCommon.DangNhap();
-           
+
             var message = "Cập nhật";
             try
             {
@@ -113,11 +110,10 @@ namespace SampleCodeAPI.Controllers
             UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
             if (loginData == null)
                 return JsonResultCommon.DangNhap();
-            
+
             string connect = _connection.getConnectionString(loginData.customerID);
             var model = await BusDotTuyenSinh.Delete(Id, connect, loginData);
             return model;
         }
-
     }
 }

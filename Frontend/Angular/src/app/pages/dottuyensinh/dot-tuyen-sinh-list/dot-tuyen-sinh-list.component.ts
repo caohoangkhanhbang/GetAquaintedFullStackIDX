@@ -190,10 +190,6 @@ export class DotTuyenSinhTableListComponent implements OnInit, AfterViewInit, On
             item: _item,
             isView: false // Add this flag for edit mode
         };
-
-        //xóa
-        console.log('dialogConfig', dialogConfig);
-
         const dialogRef = this.dialog.open(DotTuyenSinhEditDialogComponent, dialogConfig);
         dialogRef.afterClosed().subscribe(result => {
             this.loadDataList();
@@ -207,10 +203,6 @@ export class DotTuyenSinhTableListComponent implements OnInit, AfterViewInit, On
             item: _item,
             isView: true // Add this flag for view mode
         };
-
-        //xóa
-        console.log("item này ", _item)
-
         const dialogRef = this.dialog.open(DotTuyenSinhEditDialogComponent, dialogConfig);
         dialogRef.afterClosed().subscribe(result => {
             this.loadDataList();

@@ -24,37 +24,14 @@ namespace SampleCodeAPI.Controllers
         private readonly MinioObject _minioClient = minioClient;
         private readonly IConnectionService _connection = connectionService;
 
-        #region xóa -- kiểm tra bên API không cần đăng nhập (để bên trong class)
-        private UserJWT GetLoginData()
-        {
-            return _ulities.GetUserByHeader(HttpContext.Request.Headers)
-                ?? new UserJWT
-                {
-                    _id = "1",
-                    UserName = "dev",
-                    customdata = new CustomData
-                    {
-                        jeeAccount = new JeeAccount
-                        {
-                            staffID = 95294,
-                            customerID = "126879"
-                        }
-                    },
-                    customerID = 126879
-                };
-        }
-        #endregion
 
         [HttpGet]
         [Route("list")]
         public async Task<object> GetList([FromQuery] QueryParams query)
-     {
-            //UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
-            //if (loginData == null)
-            //    return JsonResultCommon.DangNhap();
-
-            //xóa -- Lệnh này để bên trong hàm cần kiểm tra
-            var loginData = GetLoginData();
+        {
+            UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
+            if (loginData == null)
+                return JsonResultCommon.DangNhap();
 
             var message = "Load danh sách";
             try
@@ -87,14 +64,9 @@ namespace SampleCodeAPI.Controllers
         [Route("insert")]
         public async Task<object> Insert(LoaiDaoTaoModel data)
         {
-            //UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
-            //if (loginData == null)
-            //    return JsonResultCommon.DangNhap();
-
-
-            //xóa -- Lệnh này để bên trong hàm cần kiểm tra
-            var loginData = GetLoginData();
-
+            UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
+            if (loginData == null)
+                return JsonResultCommon.DangNhap();
 
             var message = "Thêm mới";
             try
@@ -144,7 +116,6 @@ namespace SampleCodeAPI.Controllers
             var model = await BusLoaiDaoTao.Delete(Id, connect, loginData);
             return model;
         }
-
     }
 }
 

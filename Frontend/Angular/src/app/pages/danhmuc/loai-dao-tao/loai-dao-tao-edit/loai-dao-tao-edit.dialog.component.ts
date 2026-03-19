@@ -135,18 +135,10 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
             return;
         }
         const updatedegree = this.prepareData();
-        //xóa
-        console.log('cục dữ liệu update', updatedegree);
-        console.log('id cần cập nhật', this.item.id);
-        console.log('id cần so sánh ', updatedegree.id);
         if (updatedegree.id > 0) {
             this.Update(updatedegree);
-            //xóa
-            console.log('đã vào cập nhật', updatedegree);
         } else {
             this.Create(updatedegree, withBack);
-            //xóa
-            console.log('sao lại vào đây trời ơi!', updatedegree, withBack);
         }
     }
 
@@ -170,8 +162,6 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
 
     Create(_item: LoaiDaoTaoModel, withBack: boolean) {
         this.disabledBtn = true;
-        //xóa
-        console.log('_item cần thêm', _item);
         this.LoaiDaoTaoService.create(_item).subscribe((res: any) => {
             this.disabledBtn = false;
             this.changeDetectorRefs.detectChanges();

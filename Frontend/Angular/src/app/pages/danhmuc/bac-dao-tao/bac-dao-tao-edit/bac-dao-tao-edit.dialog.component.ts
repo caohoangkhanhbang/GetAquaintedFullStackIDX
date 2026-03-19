@@ -49,8 +49,6 @@ export class BacDaoTaoEditDialogComponent implements OnInit {
 	/** LOAD DATA */
 	ngOnInit() {
 		this.item = this.data.item;
-		//Xóa
-		console.log('item', this.item);
 		this.reset();
 		if (this.item.RowId > 0) {
 			this.viewLoading = true;

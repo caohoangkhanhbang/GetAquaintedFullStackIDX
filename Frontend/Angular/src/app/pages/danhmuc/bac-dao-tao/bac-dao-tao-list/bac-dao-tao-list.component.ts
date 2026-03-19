@@ -188,10 +188,6 @@ export class BacDaoTaoTableListComponent implements OnInit, AfterViewInit, OnDes
       item: _item,
       isView: false // Add this flag for edit mode
     };
-
-    //xóa
-    console.log('dialogConfig', dialogConfig);
-
     const dialogRef = this.dialog.open(BacDaoTaoEditDialogComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
       this.loadDataList();

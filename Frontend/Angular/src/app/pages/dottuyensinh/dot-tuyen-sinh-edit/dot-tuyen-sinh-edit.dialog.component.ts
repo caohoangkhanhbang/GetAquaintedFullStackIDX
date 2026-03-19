@@ -51,8 +51,6 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
     /** LOAD DATA */
     ngOnInit() {
         this.item = this.data.item;
-        //Xóa
-        console.log('item', this.item);
         this.reset();
         if (this.item.Id > 0) {
             this.viewLoading = true;
