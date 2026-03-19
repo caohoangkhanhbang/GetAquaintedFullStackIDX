@@ -1,9 +1,9 @@
 import { Component, OnInit, Inject, HostListener, ViewChild, ElementRef, ChangeDetectorRef, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { LoaiDaoTaoService } from '../services/loai-dao-tao-service';
+import { DotTuyenSinhService } from '../services/dot-tuyen-sinh.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { LoaiDaoTaoModel } from '../model/loai-dao-tao.model';
+import { DotTuyenSinhModel } from '../model/dot-tuyen-sinh.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
@@ -15,34 +15,35 @@ import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatSelectModule } from '@angular/material/select';
-import { AnimationDriver } from '@angular/animations/browser';
+import { BacDaoTaoService } from '../../danhmuc/bac-dao-tao/services/bac-dao-tao-service';
+import { BacDaoTaoModel } from '../../danhmuc/bac-dao-tao/model/bac-dao-tao.model';
 @Component({
-    selector: 'app-loai-dao-tao-edit-dialog',
+    selector: 'app-dot-tuyen-sinh-edit-dialog',
     standalone: true,
-    providers: [LoaiDaoTaoService, LayoutUtilsService,
+    providers: [DotTuyenSinhService, LayoutUtilsService,
         { provide: MAT_DATE_LOCALE, useValue: 'vi' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     ],
     imports: [CommonModule, FormsModule, MatFormFieldModule, MatTooltipModule, TranslateModule, ReactiveFormsModule, MatIconModule, MatDatepickerModule, NgxMatSelectSearchModule, MatSelectModule],
-    templateUrl: './loai-dao-tao-edit.dialog.component.html',
+    templateUrl: './dot-tuyen-sinh-edit.dialog.component.html',
 })
-export class LoaiDaoTaoEditDialogComponent implements OnInit {
+export class DotTuyenSinhEditDialogComponent implements OnInit {
     private translate = inject(TranslateService);
     private changeDetectorRefs = inject(ChangeDetectorRef);
     private fb = inject(FormBuilder);
-    private LoaiDaoTaoService = inject(LoaiDaoTaoService);
+    private DotTuyenSinhService = inject(DotTuyenSinhService);
     private layoutUtilsService = inject(LayoutUtilsService);
 
-    item: LoaiDaoTaoModel;
+    item: DotTuyenSinhModel;
     itemForm: FormGroup;
     hasFormErrors: boolean = false;
     viewLoading: boolean = false;
     @ViewChild("focusInput") focusInput!: ElementRef;
     disabledBtn: boolean = false;
-    listHinhThucDaoTao: any[] = [];
+    listDOTTUYENSINHDaoTao: any[] = [];
     isView: boolean = false;
 
-    constructor(public dialogRef: MatDialogRef<LoaiDaoTaoEditDialogComponent>,
+    constructor(public dialogRef: MatDialogRef<DotTuyenSinhEditDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
     ) {
         this.isView = data.isView;
@@ -53,9 +54,9 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
         //Xóa
         console.log('item', this.item);
         this.reset();
-        if (this.item.id > 0) {
+        if (this.item.Id > 0) {
             this.viewLoading = true;
-            this.LoaiDaoTaoService.getDetail(this.item.id).subscribe((res: any) => {
+            this.DotTuyenSinhService.getDetail(this.item.Id).subscribe((res: any) => {
                 this.item = res.data;
                 this.createForm();
                 this.changeDetectorRefs.detectChanges();
@@ -78,12 +79,21 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
 
     createForm() {
         this.itemForm = this.fb.group({
-            MaLoaiDT: [this.item.MaLoaiDT || '', [Validators.required]],
-            TenLoaiDT: [this.item.TenLoaiDT || '', [Validators.required]],
-            TenTiengAnh: [this.item.TenTiengAnh || ''],
-            GhiChu: [this.item.GhiChu || '', [Validators.required]],
-            SoThuTu: [this.item.SoThuTu || 1],
-            NoiDung: [this.item.NoiDung || '']
+            // Id : [this.item.Code || '', [Validators.required]],
+            NamHoc: [this.item.NamHoc || 0, [Validators.required]],
+            Dot: [this.item.Dot || '', [Validators.required]],
+            TenDotTS: [this.item.TenDotTS || '', [Validators.required]],
+            KhoaHoc: [this.item.KhoaHoc || '', [Validators.required]],
+            thoiGianNhanHSTuNgay: [this.item.ThoiGianLayHSTuNgay || new Date()],
+            thoiGianNhanHSDenNgay: [this.item.ThoiGianNhanHSDenNgay || new Date()],
+            NgayInGBTT: [this.item.NgayInGBTT || new Date()],
+            thoiGianLayHSTuNgay: [this.item.ThoiGianLayHSTuNgay || new Date()],
+            thoiGianLayHSDenNgay: [this.item.ThoiGianLayHSDenNgay || new Date()],
+            NgayNhapHocDK: [this.item.NgayNhapHocDK || new Date()],
+            GhiChu: [this.item.GhiChu || ''],
+            // NguoiTao : [this.item.NguoiTao || ''],
+            NgayTao: [this.item.NgayTao || new Date()],
+            Isdel: [this.item.Isdel || false],
         });
         this.itemForm.markAllAsTouched();
         if (this.isView) {
@@ -97,34 +107,32 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
             return this.translate.instant('COMMON.xemchitiet');
         }
 
-        if (!this.item || !this.item.id) {
+        if (!this.item || !this.item.Id) {
             return this.translate.instant('COMMON.themmoi');
         }
 
         return this.translate.instant('COMMON.capnhat');
     }
-    prepareData(): LoaiDaoTaoModel {
+    prepareData(): DotTuyenSinhModel {
         const controls = this.itemForm.controls;
-        const _item = new LoaiDaoTaoModel();
-        _item.id = this.item.id;
-        _item.MaLoaiDT = controls['MaLoaiDT'].value;
-        _item.TenLoaiDT = controls['TenLoaiDT'].value;
-        _item.TenTiengAnh = controls['TenTiengAnh'].value;
-        _item.NoiDung = controls['NoiDung'].value;
+        const _item = new DotTuyenSinhModel();
+        // _item.Id = this.item.Id;
+        _item.NamHoc = controls['NamHoc'].value;
+        _item.Dot = controls['Dot'].value;
+        _item.TenDotTS = controls['TenDotTS'].value;
+        _item.KhoaHoc = controls['KhoaHoc'].value;
+        _item.ThoiGianNhanHSTuNgay = controls['ThoiGianNhanHSTuNgay'].value;
+        _item.ThoiGianNhanHSDenNgay = controls['ThoiGianNhanHSDenNgay'].value;
+        _item.NgayInGBTT = controls['NgayInGBTT'].value;
+        _item.ThoiGianLayHSTuNgay = controls['ThoiGianLayHSTuNgay'].value;
+        _item.ThoiGianLayHSDenNgay = controls['ThoiGianLayHSDenNgay'].value;
+        _item.NgayNhapHocDK = controls['NgayNhapHocDK'].value;
         _item.GhiChu = controls['GhiChu'].value;
-        _item.SoThuTu = controls['SoThuTu'].value;
-
-        _item.NguoiTao = '';
-        _item.NgayTao = new Date();
-        _item.IsDel = false;
-
-        //  _item.NguoiTao = controls['NguoiTao'].value;
-        // _item.NgayTao = controls['NgayTao'].value;
-        // _item.IsDel = controls['IsDel'].value;
+        _item.NguoiTao = controls['NguoiTao'].value;
+        _item.NgayTao = controls['NgayTao'].value;
 
         return _item;
     }
-
     onSubmit(withBack: boolean = false) {
         this.hasFormErrors = false;
         const controls = this.itemForm.controls;
@@ -137,24 +145,16 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
             return;
         }
         const updatedegree = this.prepareData();
-        //xóa
-        console.log('cục dữ liệu update', updatedegree);
-        console.log('id cần cập nhật', this.item.id);
-        console.log('id cần so sánh ', updatedegree.id);
-        if (updatedegree.id > 0) {
+        if (updatedegree.Id > 0) {
             this.Update(updatedegree);
-            //xóa
-            console.log('đã vào cập nhật', updatedegree);
         } else {
             this.Create(updatedegree, withBack);
-            //xóa
-            console.log('sao lại vào đây trời ơi!', updatedegree, withBack);
         }
     }
 
-    Update(_item: LoaiDaoTaoModel) {
+    Update(_item: DotTuyenSinhModel) {
         this.disabledBtn = true;
-        this.LoaiDaoTaoService.update(_item).subscribe((res: any) => {
+        this.DotTuyenSinhService.update(_item).subscribe((res: any) => {
             this.disabledBtn = false;
             this.changeDetectorRefs.detectChanges();
             if (res && res.status === 1) {
@@ -170,11 +170,9 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
         });
     }
 
-    Create(_item: LoaiDaoTaoModel, withBack: boolean) {
+    Create(_item: DotTuyenSinhModel, withBack: boolean) {
         this.disabledBtn = true;
-        //xóa
-        console.log('_item cần thêm', _item);
-        this.LoaiDaoTaoService.create(_item).subscribe((res: any) => {
+        this.DotTuyenSinhService.create(_item).subscribe((res: any) => {
             this.disabledBtn = false;
             this.changeDetectorRefs.detectChanges();
             if (res && res.status === 1) {
@@ -231,43 +229,16 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
     validateNumber(e: KeyboardEvent) {
         // Cho phép: số từ 0-9 (48-57), numpad (96-105), backspace (8), delete (46)
         // tab (9), left arrow (37), right arrow (39)
-        // const allowedKeys = [8, 9, 37, 39, 46];
+        const allowedKeys = [8, 9, 37, 39, 46];
 
-        // //đã sửa ở đây
-        // //Lấy giá trị target
-        // const inputValue = e.target as HTMLInputElement;
-
-        // if (
-        //     !(
-        //         (e.keyCode >= 48 && e.keyCode <= 57) ||     // Numbers
-        //         (e.keyCode >= 96 && e.keyCode <= 105) ||    // Numpad numbers
-        //         allowedKeys.includes(e.keyCode)             // Other allowed keys
-        //     ) || inputValue.value.length >= 10// Cho phép nhập số âm
-        // ) {
-        //     e.preventDefault();
-        // }
-
-        const keyCode = e.keyCode;
-        const allowedKeys = [8, 9, 37, 39, 46]; // Backspace, Tab, Left, Right, Delete
-        const inputValue = e.target as HTMLInputElement;
-
-        // 1. Nếu là phím điều khiển (Xóa, Di chuyển) -> CHO QUA LUÔN (return sớm)
-        if (allowedKeys.includes(keyCode)) {
-            return;
+        if (
+            !(
+                (e.keyCode >= 48 && e.keyCode <= 57) ||     // Numbers
+                (e.keyCode >= 96 && e.keyCode <= 105) ||    // Numpad numbers
+                allowedKeys.includes(e.keyCode)             // Other allowed keys
+            )
+        ) {
+            e.preventDefault();
         }
-
-        // 2. Kiểm tra xem có phải là phím số không
-        const isNumber = (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105);
-
-        // 3. Nếu KHÔNG PHẢI số HOẶC (LÀ số nhưng đã đủ 10 ký tự) -> CHẶN
-        if (!isNumber || (isNumber && inputValue.value.length >= 10)) {
-            // Chỉ chặn nếu không phải là đang bôi đen để ghi đè
-            if (inputValue.selectionStart === inputValue.selectionEnd) {
-                e.preventDefault();
-            }
-        }
-
     }
-
 }
-

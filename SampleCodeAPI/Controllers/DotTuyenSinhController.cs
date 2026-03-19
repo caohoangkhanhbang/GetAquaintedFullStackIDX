@@ -10,9 +10,9 @@ using SampleCodeAPI.Services;
 
 namespace SampleCodeAPI.Controllers
 {
-    [Route("api/loaidaotao")]
+    [Route("api/dot-tuyen-sinh")]
     [ApiController]
-    public class LoaiDaoTaoController(IConfiguration configuration, IConnectionCache connectionCache, ILogger<SampleController> logger, IProducer producer, INotifyService notifyService, IBoxEvent boxEvent, MinioObject minioClient, IConnectionService connectionService) : ControllerBase
+    public class DotTuyenSinhController(IConfiguration configuration, IConnectionCache connectionCache, ILogger<SampleController> logger, IProducer producer, INotifyService notifyService, IBoxEvent boxEvent, MinioObject minioClient, IConnectionService connectionService) : ControllerBase
     {
         private IConfiguration _configuration = configuration;
         private IConnectionCache _cache = connectionCache;
@@ -24,43 +24,22 @@ namespace SampleCodeAPI.Controllers
         private readonly MinioObject _minioClient = minioClient;
         private readonly IConnectionService _connection = connectionService;
 
-        #region xóa -- kiểm tra bên API không cần đăng nhập (để bên trong class)
-        private UserJWT GetLoginData()
-        {
-            return _ulities.GetUserByHeader(HttpContext.Request.Headers)
-                ?? new UserJWT
-                {
-                    _id = "1",
-                    UserName = "dev",
-                    customdata = new CustomData
-                    {
-                        jeeAccount = new JeeAccount
-                        {
-                            staffID = 95294,
-                            customerID = "126879"
-                        }
-                    },
-                    customerID = 126879
-                };
-        }
-        #endregion
+        
+
 
         [HttpGet]
         [Route("list")]
         public async Task<object> GetList([FromQuery] QueryParams query)
         {
-            //UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
-            //if (loginData == null)
-            //    return JsonResultCommon.DangNhap();
-
-            //xóa -- Lệnh này để bên trong hàm cần kiểm tra
-            var loginData = GetLoginData();
+            UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
+            if (loginData == null)
+                return JsonResultCommon.DangNhap();
 
             var message = "Load danh sách";
             try
             {
                 string connect = _connection.getConnectionString(loginData.customerID);
-                var result = await BusLoaiDaoTao.GetList(query, connect);
+                var result = await BusDotTuyenSinh.GetList(query, connect);
                 return result;
             }
             catch (Exception ex)
@@ -79,28 +58,23 @@ namespace SampleCodeAPI.Controllers
                 return JsonResultCommon.DangNhap();
 
             string connect = _connection.getConnectionString(loginData.customerID);
-            var model = await BusLoaiDaoTao.GetDetail(Id, connect);
+            var model = await BusDotTuyenSinh.GetDetail(Id, connect);
             return model;
         }
 
         [HttpPost]
         [Route("insert")]
-        public async Task<object> Insert(LoaiDaoTaoModel data)
+        public async Task<object> Insert(DotTuyenSinhModel data)
         {
-            //UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
-            //if (loginData == null)
-            //    return JsonResultCommon.DangNhap();
-
-
-            //xóa -- Lệnh này để bên trong hàm cần kiểm tra
-            var loginData = GetLoginData();
-
+            UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
+            if (loginData == null)
+                return JsonResultCommon.DangNhap();
 
             var message = "Thêm mới";
             try
             {
                 string connect = _connection.getConnectionString(loginData.customerID);
-                var result = await BusLoaiDaoTao.Insert(data, connect, loginData);
+                var result = await BusDotTuyenSinh.Insert(data, connect, loginData);
                 return result;
             }
             catch (Exception ex)
@@ -112,17 +86,17 @@ namespace SampleCodeAPI.Controllers
 
         [HttpPost]
         [Route("update")]
-        public async Task<object> Update(LoaiDaoTaoModel data)
+        public async Task<object> Update(DotTuyenSinhModel data)
         {
             UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
             if (loginData == null)
                 return JsonResultCommon.DangNhap();
-
+           
             var message = "Cập nhật";
             try
             {
                 string connect = _connection.getConnectionString(loginData.customerID);
-                var result = await BusLoaiDaoTao.Update(data, connect, loginData);
+                var result = await BusDotTuyenSinh.Update(data, connect, loginData);
                 return result;
             }
             catch (Exception ex)
@@ -139,12 +113,11 @@ namespace SampleCodeAPI.Controllers
             UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
             if (loginData == null)
                 return JsonResultCommon.DangNhap();
-
+            
             string connect = _connection.getConnectionString(loginData.customerID);
-            var model = await BusLoaiDaoTao.Delete(Id, connect, loginData);
+            var model = await BusDotTuyenSinh.Delete(Id, connect, loginData);
             return model;
         }
 
     }
 }
-
