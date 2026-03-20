@@ -15,12 +15,13 @@ namespace SampleCodeAPI.Business
             {
 
                 SqlConditions Conds = new SqlConditions();
-                string sqlq = "", orderByStr = " TenDotTS ", whereStr = " Isdel = 0 ";
+                string sqlq = "", orderByStr = " TenDotTS ", whereStr = " HienThi = 1 ";
                 Dictionary<string, string> sortableFields = new Dictionary<string, string>
                 {
-                    { "RowId", "RowId"},
-                    { "Code", "Code"},
-                    { "Title", "Title"},
+                    { "TenDotTS", "TenDotTS"},
+                    { "Dot", "Dot"},
+                    { "NamHoc", "NamHoc"},
+                    { "KhoaHoc", "KhoaHoc"}
                 };
 
                 if (!string.IsNullOrEmpty(query.sortField) && sortableFields.ContainsKey(query.sortField))
@@ -110,7 +111,7 @@ namespace SampleCodeAPI.Business
 
                                 NgayTao = r["NgayTao"] != DBNull.Value ? Convert.ToDateTime(r["NgayTao"]) : (DateTime?)null,
 
-                                Isdel = r["Isdel"] != DBNull.Value ? Convert.ToBoolean(r["Isdel"]) : false,
+                                HienThi = r["HienThi"] != DBNull.Value ? Convert.ToBoolean(r["HienThi"]) : false,
 
                             }).ToList();
 
@@ -187,7 +188,7 @@ namespace SampleCodeAPI.Business
 
                                 NgayTao = r["NgayTao"] != DBNull.Value ? Convert.ToDateTime(r["NgayTao"]) : (DateTime?)null,
 
-                                Isdel = r["Isdel"] != DBNull.Value ? Convert.ToBoolean(r["Isdel"]) : false,
+                                HienThi = r["HienThi"] != DBNull.Value ? Convert.ToBoolean(r["HienThi"]) : false,
 
                             }).FirstOrDefault();
 
@@ -237,7 +238,7 @@ namespace SampleCodeAPI.Business
                 val.Add("NgayNhapHocDK", data.NgayNhapHocDK);
                 val.Add("GhiChu", data.GhiChu);
 
-                val.Add("Isdel", data.Isdel);
+                val.Add("HienThi", data.HienThi);
                 val.Add("NguoiTao", loginData.customdata.jeeAccount.userID);
                 val.Add("NgayTao", DateTime.Now); 
 
@@ -307,7 +308,7 @@ namespace SampleCodeAPI.Business
                 val.Add("GhiChu", data.GhiChu);
 
                 // Các trường hệ thống và trạng thái
-                val.Add("Isdel", data.Isdel);
+                val.Add("HienThi", data.HienThi);
                 if (cnn.Update(val, new SqlConditions { { "id", data.Id } }, "DotTuyenSinh") == 1)
                 {
                     model.status = 1;
@@ -336,7 +337,7 @@ namespace SampleCodeAPI.Business
             using (DpsConnection cnn = new DpsConnection(connect))
             {
                 Hashtable val = new Hashtable();
-                val.Add("IsDel", 1);
+                val.Add("HienThi", 0);
                
                 if (cnn.Update(val, new SqlConditions { { "id", id } }, "DotTuyenSinh") == 1)
                 {
@@ -366,7 +367,7 @@ namespace SampleCodeAPI.Business
             using (DpsConnection cnn = new DpsConnection(_ConnectionString))
             {
                 SqlConditions conds = new SqlConditions();
-                string sql = "select * from DotTuyenSinh where TenDotTS = @Code  and IsDel=0";
+                string sql = "select * from DotTuyenSinh where TenDotTS = @Code  and HienThi=0";
                 conds.Add("Code", name);
 
                 if (!string.IsNullOrEmpty(Id))

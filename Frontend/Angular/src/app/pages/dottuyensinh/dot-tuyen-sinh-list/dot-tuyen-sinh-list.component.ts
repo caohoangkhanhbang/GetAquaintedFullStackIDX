@@ -148,7 +148,7 @@ export class DotTuyenSinhTableListComponent implements OnInit, AfterViewInit, On
         };
         Swal.fire(successAlert).then((clicked) => {
             if (clicked.isConfirmed) {
-                this.DotTuyenSinhService.delete(item.RowId).subscribe((res) => {
+                this.DotTuyenSinhService.delete(item.Id).subscribe((res) => {
                     if (res && res.status == 1) {
                         this.loadDataList();
                         this.layoutUtilsService.showSuccess(res.error.message);

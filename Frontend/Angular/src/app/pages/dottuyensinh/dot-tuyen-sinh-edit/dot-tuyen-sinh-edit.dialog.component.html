@@ -27,27 +27,33 @@
                             <div class="fv-row mb-7 col col-6">
                                 <label class="required fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.dot' | translate
                                     }}</label>
-                                <input type="text" class="form-control form-control-solid class-batbuoc input-batbuoc"
-                                    formControlName="Dot" required />
+                                <input type="number" class="form-control form-control-solid class-batbuoc input-batbuoc"
+                                    formControlName="Dot" min="1" (keydown)="validateNumber($event)" required />
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="fv-row mb-7 col col-6">
-                                <label class="required fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.namhoc' | translate }}</label>
-                                <mat-select class="form-control form-control-solid" formControlName="DOTTUYENSINHDaoTao" required>
+                                <label class="required fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.namhoc' | translate
+                                    }}</label>
+                                <mat-select class="form-control form-control-solid input-batbuoc"
+                                    formControlName="DOTTUYENSINHDaoTao" required>
                                     <mat-option [value]="0">{{ 'DOTTUYENSINH.khongchon' | translate }}</mat-option>
-                                    <mat-option *ngFor="let DOTTUYENSINH of listDOTTUYENSINHDaoTao" [value]="DOTTUYENSINH.NamHoc">
+                                    <mat-option *ngFor="let DOTTUYENSINH of listDOTTUYENSINHDaoTao"
+                                        [value]="DOTTUYENSINH.NamHoc">
                                         {{ DOTTUYENSINH.NamHoc}}
                                     </mat-option>
                                 </mat-select>
                             </div>
 
                             <div class="fv-row mb-7 col col-6">
-                                <label class="required fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.khoahoc' | translate }}</label>
-                                <mat-select class="form-control form-control-solid" formControlName="DOTTUYENSINHDaoTao" required>
+                                <label class="required fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.khoahoc' | translate
+                                    }}</label>
+                                <mat-select class="form-control form-control-solid input-batbuoc"
+                                    formControlName="DOTTUYENSINHDaoTao" required>
                                     <mat-option [value]="0">{{ 'DOTTUYENSINH.khongchon' | translate }}</mat-option>
-                                    <mat-option *ngFor="let DOTTUYENSINH of listDOTTUYENSINHDaoTao" [value]="DOTTUYENSINH.KhoaHoc">
+                                    <mat-option *ngFor="let DOTTUYENSINH of listDOTTUYENSINHDaoTao"
+                                        [value]="DOTTUYENSINH.KhoaHoc">
                                         {{ DOTTUYENSINH.KhoaHoc}}
                                     </mat-option>
                                 </mat-select>
@@ -59,7 +65,7 @@
                             <div class="fv-row mb-7 col col-6">
                                 <label class="fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.thoigiannhanHS_tungay' | translate
                                     }}</label>
-                                  <input type="date" class="form-control form-control-solid"
+                                <input type="date" class="form-control form-control-solid"
                                     formControlName="ThoiGianNhanHSTuNgay" required />
                             </div>
 
@@ -90,8 +96,8 @@
                         <div class="row">
                             <div class="fv-row mb-7 col col-6">
                                 <label class="fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.ngayinGBTT' | translate }}</label>
-                                <input type="date" class="form-control form-control-solid"
-                                    formControlName="NgayInGBTT" required />
+                                <input type="date" class="form-control form-control-solid" formControlName="NgayInGBTT"
+                                    required />
                             </div>
 
                             <div class="fv-row mb-7 col col-6">
@@ -106,7 +112,7 @@
                         <!-- <div class="row"> -->
                         <label class="fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.hienthi' | translate}}</label>
                         <!-- </div> -->
-                        <input type="checkbox" name="" id="" checked>
+                        <input type="checkbox" name="" id="" formControlName="HienThi" checked>
 
                         <div class="fv-row mb-7">
                             <label class="fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.ghichu' |

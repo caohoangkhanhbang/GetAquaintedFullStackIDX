@@ -13,7 +13,6 @@ namespace SampleCodeAPI.Business
             PageModel pageModel = new PageModel();
             using (DpsConnection cnn = new DpsConnection(connect))
             {
-
                 SqlConditions Conds = new SqlConditions();
                 string sqlq = "", orderByStr = " TenLoaiDT ", whereStr = " Isdel = 0 ";
                 Dictionary<string, string> sortableFields = new Dictionary<string, string>
@@ -313,7 +312,7 @@ namespace SampleCodeAPI.Business
             using (DpsConnection cnn = new DpsConnection(_ConnectionString))
             {
                 SqlConditions conds = new SqlConditions();
-                string sql = "select * from LoaiDaoTao where TenLoaiDT = @Code  and IsDel=0";
+                string sql = "select * from LoaiDaoTao where MaLoaiDT = @Code  and IsDel=0";
                 conds.Add("Code", name);
 
                 if (!string.IsNullOrEmpty(Id))

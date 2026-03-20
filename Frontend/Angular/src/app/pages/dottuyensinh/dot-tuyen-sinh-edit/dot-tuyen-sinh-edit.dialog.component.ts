@@ -77,7 +77,7 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
 
     createForm() {
         this.itemForm = this.fb.group({
-            // Id : [this.item.Code || '', [Validators.required]],
+            Id: [this.item.Id || '', [Validators.required]],
             NamHoc: [this.item.NamHoc || 0, [Validators.required]],
             Dot: [this.item.Dot || '', [Validators.required]],
             TenDotTS: [this.item.TenDotTS || '', [Validators.required]],
@@ -91,7 +91,7 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
             GhiChu: [this.item.GhiChu || ''],
             // NguoiTao : [this.item.NguoiTao || ''],
             NgayTao: [this.item.NgayTao || new Date()],
-            Isdel: [this.item.Isdel || false],
+            HienThi: [this.item.HienThi || false],
         });
         this.itemForm.markAllAsTouched();
         if (this.isView) {
@@ -114,21 +114,27 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
     prepareData(): DotTuyenSinhModel {
         const controls = this.itemForm.controls;
         const _item = new DotTuyenSinhModel();
-        // _item.Id = this.item.Id;
+        //xóa
+        console.log('item ', controls);
+        _item.Id = controls['Id'].value;
+        //xóa
+        console.log("giá trị id ", _item.Id);
         _item.NamHoc = controls['NamHoc'].value;
         _item.Dot = controls['Dot'].value;
         _item.TenDotTS = controls['TenDotTS'].value;
         _item.KhoaHoc = controls['KhoaHoc'].value;
-        _item.ThoiGianNhanHSTuNgay = controls['ThoiGianNhanHSTuNgay'].value;
-        _item.ThoiGianNhanHSDenNgay = controls['ThoiGianNhanHSDenNgay'].value;
+        // _item.ThoiGianNhanHSTuNgay = controls['ThoiGianNhanHSTuNgay'].value;
+        // _item.ThoiGianNhanHSDenNgay = controls['ThoiGianNhanHSDenNgay'].value;
         _item.NgayInGBTT = controls['NgayInGBTT'].value;
-        _item.ThoiGianLayHSTuNgay = controls['ThoiGianLayHSTuNgay'].value;
-        _item.ThoiGianLayHSDenNgay = controls['ThoiGianLayHSDenNgay'].value;
+        // _item.ThoiGianLayHSTuNgay = controls['ThoiGianLayHSTuNgay'].value;
+        // _item.ThoiGianLayHSDenNgay = controls['ThoiGianLayHSDenNgay'].value;
         _item.NgayNhapHocDK = controls['NgayNhapHocDK'].value;
         _item.GhiChu = controls['GhiChu'].value;
         _item.NguoiTao = controls['NguoiTao'].value;
         _item.NgayTao = controls['NgayTao'].value;
 
+        //xóa
+        console.log('item ', _item);
         return _item;
     }
     onSubmit(withBack: boolean = false) {
@@ -142,7 +148,25 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
             this.hasFormErrors = true;
             return;
         }
+        //xóa
+        // console.log('updatedegree', updatedegree);
+        // const startDate = this.itemForm.controls['ThoiGianNhanHSTuNgay'].value;
+        // const startDate = this.itemForm.get('ThoiGianLayHSDenNgay')?.value;
+        // const valid = this.valiDateRange(startDate, startDate);
+        // console.log('ngày', startDate);
+        // console.log('valid', valid);
+        // console.log('form', controls);
+        // const tuNgay = this.itemForm.get('ThoiGianLayHSTuNgay')?.value;
+
+        this.itemForm.get('ThoiGianLayHSTuNgay')?.valueChanges.subscribe(val => {
+            console.log('Người dùng vừa thay đổi ngày thành:', val);
+            // Bạn có thể thực hiện so sánh logic ngay tại đây
+        });
+
         const updatedegree = this.prepareData();
+
+
+
         if (updatedegree.Id > 0) {
             this.Update(updatedegree);
         } else {
@@ -225,18 +249,35 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
     }
 
     validateNumber(e: KeyboardEvent) {
-        // Cho phép: số từ 0-9 (48-57), numpad (96-105), backspace (8), delete (46)
-        // tab (9), left arrow (37), right arrow (39)
-        const allowedKeys = [8, 9, 37, 39, 46];
+        const keyCode = e.keyCode;
+        const allowedKeys = [8, 9, 37, 39, 46]; // Backspace, Tab, Left, Right, Delete
+        const inputValue = e.target as HTMLInputElement;
 
-        if (
-            !(
-                (e.keyCode >= 48 && e.keyCode <= 57) ||     // Numbers
-                (e.keyCode >= 96 && e.keyCode <= 105) ||    // Numpad numbers
-                allowedKeys.includes(e.keyCode)             // Other allowed keys
-            )
-        ) {
-            e.preventDefault();
+        // 1. Nếu là phím điều khiển (Xóa, Di chuyển) -> CHO QUA LUÔN (return sớm)
+        if (allowedKeys.includes(keyCode)) {
+            return;
         }
+
+        // 2. Kiểm tra xem có phải là phím số không
+        const isNumber = (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105);
+
+        // 3. Nếu KHÔNG PHẢI số HOẶC (LÀ số nhưng đã đủ 10 ký tự) -> CHẶN
+        if (!isNumber || (isNumber && inputValue.value.length >= 10)) {
+            // Chỉ chặn nếu không phải là đang bôi đen để ghi đè
+            if (inputValue.selectionStart === inputValue.selectionEnd) {
+                e.preventDefault();
+            }
+        }
+
+    }
+
+    valiDateRange(strartDateString: string, endDateString: string): boolean {
+        if (!strartDateString || !endDateString)
+            return true;
+        const startDate = new Date(strartDateString);
+        const endDate = new Date(endDateString);
+        //xóa
+        console.log("ngày ", startDate, endDate);
+        return endDate.getTime() >= startDate.getTime();
     }
 }

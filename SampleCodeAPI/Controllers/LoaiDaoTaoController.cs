@@ -24,7 +24,6 @@ namespace SampleCodeAPI.Controllers
         private readonly MinioObject _minioClient = minioClient;
         private readonly IConnectionService _connection = connectionService;
 
-
         [HttpGet]
         [Route("list")]
         public async Task<object> GetList([FromQuery] QueryParams query)
@@ -42,7 +41,7 @@ namespace SampleCodeAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logHelper.LogError(loginData.UserName, "QLBacDaoTaoController", message, ex);
+                _logHelper.LogError(loginData.UserName, "LoaiDaoTaoController", message, ex);
                 return JsonResultCommon.Exception(ex);
             }
         }
@@ -77,7 +76,7 @@ namespace SampleCodeAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logHelper.LogError(loginData.UserName, "QLBacDaoTaoController", message, ex);
+                _logHelper.LogError(loginData.UserName, "LoaiDaoTaoController", message, ex);
                 return JsonResultCommon.Exception(ex);
             }
         }
@@ -99,7 +98,7 @@ namespace SampleCodeAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logHelper.LogError(loginData.UserName, "QLBacDaoTaoController", message, ex);
+                _logHelper.LogError(loginData.UserName, "LoaiDaoTaoController", message, ex);
                 return JsonResultCommon.Exception(ex);
             }
         }

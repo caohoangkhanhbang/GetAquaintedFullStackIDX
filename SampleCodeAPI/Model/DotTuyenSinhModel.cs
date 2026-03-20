@@ -16,6 +16,6 @@
         public string GhiChu { get; set; }
         public string NguoiTao { get; set; }
         public DateTime? NgayTao { get; set; }
-        public bool Isdel { get; set; }
+        public bool HienThi { get; set; }
     }
 }

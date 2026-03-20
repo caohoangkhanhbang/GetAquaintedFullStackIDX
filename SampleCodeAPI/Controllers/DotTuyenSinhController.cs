@@ -41,7 +41,7 @@ namespace SampleCodeAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logHelper.LogError(loginData.UserName, "QLBacDaoTaoController", message, ex);
+                _logHelper.LogError(loginData.UserName, "DotTuyenSinhController", message, ex);
                 return JsonResultCommon.Exception(ex);
             }
         }
@@ -76,7 +76,7 @@ namespace SampleCodeAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logHelper.LogError(loginData.UserName, "QLBacDaoTaoController", message, ex);
+                _logHelper.LogError(loginData.UserName, "DotTuyenSinhController", message, ex);
                 return JsonResultCommon.Exception(ex);
             }
         }
@@ -98,7 +98,7 @@ namespace SampleCodeAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logHelper.LogError(loginData.UserName, "QLBacDaoTaoController", message, ex);
+                _logHelper.LogError(loginData.UserName, "DotTuyenSinhController", message, ex);
                 return JsonResultCommon.Exception(ex);
             }
         }

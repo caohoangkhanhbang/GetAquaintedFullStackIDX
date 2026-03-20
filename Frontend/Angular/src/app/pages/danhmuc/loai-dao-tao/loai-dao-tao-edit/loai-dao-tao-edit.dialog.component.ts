@@ -217,24 +217,6 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
     }
 
     validateNumber(e: KeyboardEvent) {
-        // Cho phép: số từ 0-9 (48-57), numpad (96-105), backspace (8), delete (46)
-        // tab (9), left arrow (37), right arrow (39)
-        // const allowedKeys = [8, 9, 37, 39, 46];
-
-        // //đã sửa ở đây
-        // //Lấy giá trị target
-        // const inputValue = e.target as HTMLInputElement;
-
-        // if (
-        //     !(
-        //         (e.keyCode >= 48 && e.keyCode <= 57) ||     // Numbers
-        //         (e.keyCode >= 96 && e.keyCode <= 105) ||    // Numpad numbers
-        //         allowedKeys.includes(e.keyCode)             // Other allowed keys
-        //     ) || inputValue.value.length >= 10// Cho phép nhập số âm
-        // ) {
-        //     e.preventDefault();
-        // }
-
         const keyCode = e.keyCode;
         const allowedKeys = [8, 9, 37, 39, 46]; // Backspace, Tab, Left, Right, Delete
         const inputValue = e.target as HTMLInputElement;
