@@ -60,7 +60,7 @@ namespace SampleCodeAPI.Controllers
             try
             {
                 string connect = _connection.getConnectionString(loginData.customerID);
-                var result = await BusShare.GetListNamHoc(connect);//query,
+                var result = await BusShare.GetListKhoaHoc(connect);//query,
                 return result;
             }
             catch (Exception ex)

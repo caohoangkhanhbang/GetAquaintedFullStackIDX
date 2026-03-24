@@ -12,7 +12,7 @@ namespace SampleCodeAPI.Controllers
 {
     [Route("api/loaidaotao")]
     [ApiController]
-    public class LoaiDaoTaoController(IConfiguration configuration, IConnectionCache connectionCache, ILogger<SampleController> logger, IProducer producer, INotifyService notifyService, IBoxEvent boxEvent, MinioObject minioClient, IConnectionService connectionService) : ControllerBase
+    public class QLQLLoaiDaoTaoController(IConfiguration configuration, IConnectionCache connectionCache, ILogger<SampleController> logger, IProducer producer, INotifyService notifyService, IBoxEvent boxEvent, MinioObject minioClient, IConnectionService connectionService) : ControllerBase
     {
         private IConfiguration _configuration = configuration;
         private IConnectionCache _cache = connectionCache;
@@ -41,7 +41,7 @@ namespace SampleCodeAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logHelper.LogError(loginData.UserName, "LoaiDaoTaoController", message, ex);
+                _logHelper.LogError(loginData.UserName, "QLLoaiDaoTaoController", message, ex);
                 return JsonResultCommon.Exception(ex);
             }
         }
@@ -76,7 +76,7 @@ namespace SampleCodeAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logHelper.LogError(loginData.UserName, "LoaiDaoTaoController", message, ex);
+                _logHelper.LogError(loginData.UserName, "QLLoaiDaoTaoController", message, ex);
                 return JsonResultCommon.Exception(ex);
             }
         }
@@ -98,7 +98,7 @@ namespace SampleCodeAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logHelper.LogError(loginData.UserName, "LoaiDaoTaoController", message, ex);
+                _logHelper.LogError(loginData.UserName, "QLLoaiDaoTaoController", message, ex);
                 return JsonResultCommon.Exception(ex);
             }
         }

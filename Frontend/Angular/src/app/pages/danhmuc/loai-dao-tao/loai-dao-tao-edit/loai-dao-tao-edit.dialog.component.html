@@ -38,14 +38,14 @@
 
                         <div class="fv-row mb-7">
                             <label class="fw-semibold fs-6 mb-2">{{ 'LOAIDAOTAO.noidung' | translate }}</label>
-                            <textarea class="form-control form-control-solid class-batbuoc input-batbuoc"
-                                formControlName="NoiDung" rows="2" required></textarea>
+                            <textarea class="form-control form-control-solid"
+                                formControlName="NoiDung" rows="2"></textarea>
                         </div>
 
                         <div class="fv-row mb-7">
-                            <label class="required fw-semibold fs-6 mb-2">{{ 'LOAIDAOTAO.stt' | translate }}</label>
+                            <label class="fw-semibold fs-6 mb-2">{{ 'LOAIDAOTAO.stt' | translate }}</label>
                             <input type="number" class="form-control form-control-solid" formControlName="SoThuTu"
-                                min="1" maxlength="10" (keydown)="validateNumber($event)" />
+                               (keydown)="validateNumber($event)" />
                         </div>
 
                         <div class="fv-row mb-7">

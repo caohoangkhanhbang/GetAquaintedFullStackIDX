@@ -49,10 +49,10 @@ builder.Configuration["MinioConfig:MinioSecretKey"] = minioData["secret_key"].To
 builder.Configuration["Jwt:internal_secret"] = kafkaData["internal_secret"].ToString();
 #endregion
 //add provider mới cho logger 
-builder.Services.AddLogging(builder =>
-{
-    builder.addAsyncLogger(p => new AsyncLoggerProvider(p.GetService<IProducer>()));
-});
+//builder.Services.AddLogging(builder =>
+//{
+//    builder.addAsyncLogger(p => new AsyncLoggerProvider(p.GetService<IProducer>()));
+//});
 
 builder.Services.AddCors(o => o.AddPolicy("AllowOrigin", builder =>
 {

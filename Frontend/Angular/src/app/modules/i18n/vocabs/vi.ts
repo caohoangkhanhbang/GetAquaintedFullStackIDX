@@ -85,7 +85,8 @@ export const locale = {
       thoigianlayHS_tungay: 'Thời gian lấy hồ sơ từ ngày',
       thoigianlayHS_denngay: 'Thời gian lấy hồ sơ đến ngày',
       hienthi: 'Hiển thị',
-      khongchon: 'Không chọn'
+      khongchon: 'Không chọn',
+      kichhoat: 'Kích hoạt'
     }
   },
 };
