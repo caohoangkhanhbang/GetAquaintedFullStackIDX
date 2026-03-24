@@ -80,7 +80,7 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
             TenLoaiDT: [this.item.TenLoaiDT || '', [Validators.required]],
             TenTiengAnh: [this.item.TenTiengAnh || ''],
             GhiChu: [this.item.GhiChu || '', [Validators.required]],
-            SoThuTu: [this.item.SoThuTu || 1],
+            SoThuTu: [this.item.SoThuTu],
             NoiDung: [this.item.NoiDung || '']
         });
         this.itemForm.markAllAsTouched();
@@ -101,25 +101,22 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
 
         return this.translate.instant('COMMON.capnhat');
     }
+    
     prepareData(): LoaiDaoTaoModel {
         const controls = this.itemForm.controls;
         const _item = new LoaiDaoTaoModel();
         _item.id = this.item.id;
         _item.MaLoaiDT = controls['MaLoaiDT'].value;
         _item.TenLoaiDT = controls['TenLoaiDT'].value;
-        _item.TenTiengAnh = controls['TenTiengAnh'].value;
+        _item.TenTiengAnh = controls['TenTiengAnh'].value ?? null;
         _item.NoiDung = controls['NoiDung'].value;
-        _item.GhiChu = controls['GhiChu'].value;
-        _item.SoThuTu = controls['SoThuTu'].value;
-
-        _item.NguoiTao = '';
-        _item.NgayTao = new Date();
-        _item.IsDel = false;
-
-        //  _item.NguoiTao = controls['NguoiTao'].value;
-        // _item.NgayTao = controls['NgayTao'].value;
-        // _item.IsDel = controls['IsDel'].value;
-
+        _item.GhiChu = controls['GhiChu'].value ?? null;
+        if (controls['SoThuTu'].value === undefined || controls['SoThuTu'].value === null || controls['SoThuTu'].value === '') {
+            _item.SoThuTu = 0;
+        }
+        else {
+            _item.SoThuTu = controls['SoThuTu'].value;
+        }
         return _item;
     }
 
@@ -135,6 +132,13 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
             return;
         }
         const updatedegree = this.prepareData();
+        const stt = this.itemForm.get("SoThuTu")?.value;
+        if (stt !== null && stt !== undefined && stt !== '') {
+            if (Number(stt) <= 0) {
+                this.NotificationCustom("Số thứ tự phải lớn hơn không!");
+                return;
+            }
+        }
         if (updatedegree.id > 0) {
             this.Update(updatedegree);
         } else {
@@ -220,6 +224,7 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
         const keyCode = e.keyCode;
         const allowedKeys = [8, 9, 37, 39, 46]; // Backspace, Tab, Left, Right, Delete
         const inputValue = e.target as HTMLInputElement;
+        const maxSoThuTu = 2147483647;
 
         // 1. Nếu là phím điều khiển (Xóa, Di chuyển) -> CHO QUA LUÔN (return sớm)
         if (allowedKeys.includes(keyCode)) {
@@ -230,13 +235,35 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
         const isNumber = (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105);
 
         // 3. Nếu KHÔNG PHẢI số HOẶC (LÀ số nhưng đã đủ 10 ký tự) -> CHẶN
-        if (!isNumber || (isNumber && inputValue.value.length >= 10)) {
+        if (!isNumber || (isNumber && Number(inputValue.value) > maxSoThuTu)) {
+            //Hiển thị thông báo nếu nhập quá 10 chữ số
+            this.Notification();
             // Chỉ chặn nếu không phải là đang bôi đen để ghi đè
             if (inputValue.selectionStart === inputValue.selectionEnd) {
                 e.preventDefault();
             }
         }
 
+    }
+
+    Notification() {
+        Swal.fire({
+            title: "Thông báo!",
+            text: "Số thứ tự không được vượt quá 2,147,483,647",
+            icon: "warning",
+            confirmButtonText: "Đồng ý",
+            confirmButtonColor: "rgb(0, 255, 8)",
+        })
+    }
+
+    NotificationCustom(text: string) {
+        Swal.fire({
+            title: "Thông báo!",
+            text: text,
+            icon: "info",
+            confirmButtonText: "Đồng ý",
+            confirmButtonColor: "rgb(255, 0, 68)"
+        })
     }
 
 }

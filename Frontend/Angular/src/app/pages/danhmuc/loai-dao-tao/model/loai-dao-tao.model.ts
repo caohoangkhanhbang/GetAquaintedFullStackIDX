@@ -6,11 +6,11 @@ export class LoaiDaoTaoModel extends BaseModel {
     TenLoaiDT: string;
     TenTiengAnh: string;
     NoiDung: string;
-    SoThuTu: number;
+    SoThuTu: number | null | string;
     GhiChu: string;
-    IsDel: boolean;
-    NguoiTao: string;
-    NgayTao: Date | string;
+    IsDel?: boolean;
+    CreatedBy?: string;
+    CreatedDate?: Date | string;
 
     clear() {
         this.id = 0;
@@ -21,7 +21,7 @@ export class LoaiDaoTaoModel extends BaseModel {
         this.SoThuTu = 0;
         this.GhiChu = '';
         this.IsDel = false;
-        this.NguoiTao = '';
-        this.NgayTao = new Date();
+        this.CreatedBy = '';
+        this.CreatedDate = new Date();
     }
 }

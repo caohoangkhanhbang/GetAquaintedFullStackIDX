@@ -38,8 +38,7 @@ export class DotTuyenSinhTableListComponent implements OnInit, AfterViewInit, On
     itemModel: any;
     dataSource: DotTuyenSinhDataSource;
     dataResult: any[] = [];
-    //displayedColumns = ['STT', 'Code', 'Title', 'TenTiengAnh', 'HinhThucDaoTao', 'GhiChu', 'FullName', 'CreatedDate', 'actions'];
-    displayedColumns = ['STT', 'NamHoc', 'Dot', 'TenDotTS', 'KhoaHoc', 'ThoiGianNhanHS', 'NgayInGBTT', 'ThoiGianLayHS', 'NgayNhapHocDK', 'GhiChu', 'NguoiTao', 'NgayTao', 'actions']
+    displayedColumns = ['STT', 'NamHoc', 'Dot', 'TenDotTS', 'KhoaHoc', 'ThoiGianNhanHS', 'NgayInGBTT', 'ThoiGianLayHS', 'NgayNhapHocDK', 'GhiChu', 'CreatedBy', 'CreatedDate', 'actions']
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
     @ViewChild('searchInput', { static: true }) searchInput: ElementRef;

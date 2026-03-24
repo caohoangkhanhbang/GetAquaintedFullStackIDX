@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, HostListener, ViewChild, ElementRef, ChangeDetectorRef, inject } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DotTuyenSinhService } from '../services/dot-tuyen-sinh.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -15,8 +15,7 @@ import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatSelectModule } from '@angular/material/select';
-import { BacDaoTaoService } from '../../danhmuc/bac-dao-tao/services/bac-dao-tao-service';
-import { BacDaoTaoModel } from '../../danhmuc/bac-dao-tao/model/bac-dao-tao.model';
+import { from } from 'rxjs';
 @Component({
     selector: 'app-dot-tuyen-sinh-edit-dialog',
     standalone: true,
@@ -42,6 +41,8 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
     disabledBtn: boolean = false;
     listDOTTUYENSINHDaoTao: any[] = [];
     isView: boolean = false;
+    listNamHoc: any[] = [];
+    listKhoaHoc: any[] = [];
 
     constructor(public dialogRef: MatDialogRef<DotTuyenSinhEditDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
@@ -76,24 +77,35 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
     }
 
     createForm() {
+        this.getListNamHoc();
+        this.getListKhoaHoc();
+        const fromDateNhanHS = this.formatDateCustom(this.item.ThoiGianNhanHSTuNgay);
+        const toDateNhanHS = this.formatDateCustom(this.item.ThoiGianNhanHSDenNgay);
+        const fromDateLayHS = this.formatDateCustom(this.item.ThoiGianLayHSTuNgay);
+        const toDateLayHS = this.formatDateCustom(this.item.ThoiGianLayHSDenNgay);
+        const ngayNhapHocDK = this.formatDateCustom(this.item.NgayNhapHocDK);
+        const ngayinGBTT = this.formatDateCustom(this.item.NgayInGBTT);
+
+
+
         this.itemForm = this.fb.group({
-            Id: [this.item.Id || '', [Validators.required]],
-            NamHoc: [this.item.NamHoc || 0, [Validators.required]],
+            Id: [this.item.Id],
+            NamHoc: [this.item.NamHoc || '', [Validators.required]],
             Dot: [this.item.Dot || '', [Validators.required]],
             TenDotTS: [this.item.TenDotTS || '', [Validators.required]],
             KhoaHoc: [this.item.KhoaHoc || '', [Validators.required]],
-            thoiGianNhanHSTuNgay: [this.item.ThoiGianLayHSTuNgay || new Date()],
-            thoiGianNhanHSDenNgay: [this.item.ThoiGianNhanHSDenNgay || new Date()],
-            NgayInGBTT: [this.item.NgayInGBTT || new Date()],
-            thoiGianLayHSTuNgay: [this.item.ThoiGianLayHSTuNgay || new Date()],
-            thoiGianLayHSDenNgay: [this.item.ThoiGianLayHSDenNgay || new Date()],
-            NgayNhapHocDK: [this.item.NgayNhapHocDK || new Date()],
+            ThoiGianNhanHSTuNgay: fromDateNhanHS,
+            ThoiGianNhanHSDenNgay: toDateNhanHS,
+            NgayInGBTT: ngayinGBTT,
+            ThoiGianLayHSTuNgay: fromDateLayHS,
+            ThoiGianLayHSDenNgay: toDateLayHS,
+            NgayNhapHocDK: ngayNhapHocDK,
             GhiChu: [this.item.GhiChu || ''],
-            // NguoiTao : [this.item.NguoiTao || ''],
-            NgayTao: [this.item.NgayTao || new Date()],
-            HienThi: [this.item.HienThi || false],
+            HienThi: [this.item.HienThi],
+            KichHoat: [this.item.KichHoat],
         });
         this.itemForm.markAllAsTouched();
+
         if (this.isView) {
             this.itemForm.disable();
         }
@@ -111,35 +123,38 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
 
         return this.translate.instant('COMMON.capnhat');
     }
+
     prepareData(): DotTuyenSinhModel {
         const controls = this.itemForm.controls;
         const _item = new DotTuyenSinhModel();
-        //xóa
-        console.log('item ', controls);
-        _item.Id = controls['Id'].value;
-        //xóa
-        console.log("giá trị id ", _item.Id);
-        _item.NamHoc = controls['NamHoc'].value;
-        _item.Dot = controls['Dot'].value;
-        _item.TenDotTS = controls['TenDotTS'].value;
-        _item.KhoaHoc = controls['KhoaHoc'].value;
-        // _item.ThoiGianNhanHSTuNgay = controls['ThoiGianNhanHSTuNgay'].value;
-        // _item.ThoiGianNhanHSDenNgay = controls['ThoiGianNhanHSDenNgay'].value;
-        _item.NgayInGBTT = controls['NgayInGBTT'].value;
-        // _item.ThoiGianLayHSTuNgay = controls['ThoiGianLayHSTuNgay'].value;
-        // _item.ThoiGianLayHSDenNgay = controls['ThoiGianLayHSDenNgay'].value;
-        _item.NgayNhapHocDK = controls['NgayNhapHocDK'].value;
-        _item.GhiChu = controls['GhiChu'].value;
-        _item.NguoiTao = controls['NguoiTao'].value;
-        _item.NgayTao = controls['NgayTao'].value;
-
-        //xóa
-        console.log('item ', _item);
+        _item.Id = this.item.Id;
+        _item.NamHoc = controls['NamHoc']?.value ?? 0;
+        _item.Dot = controls['Dot']?.value ?? '';
+        _item.TenDotTS = controls['TenDotTS']?.value ?? '';
+        _item.KhoaHoc = controls['KhoaHoc']?.value ?? 0;
+        _item.ThoiGianNhanHSTuNgay = this.styleConversionNull(controls['ThoiGianNhanHSTuNgay']?.value);
+        _item.ThoiGianNhanHSDenNgay = this.styleConversionNull(controls['ThoiGianNhanHSDenNgay']?.value);
+        _item.NgayInGBTT = this.styleConversionNull(controls['NgayInGBTT']?.value);
+        _item.ThoiGianLayHSTuNgay = this.styleConversionNull(controls['ThoiGianLayHSTuNgay']?.value);
+        _item.ThoiGianLayHSDenNgay = this.styleConversionNull(controls['ThoiGianLayHSDenNgay']?.value);
+        _item.NgayNhapHocDK = this.styleConversionNull(controls['NgayNhapHocDK']?.value);
+        _item.GhiChu = controls['GhiChu']?.value ?? '';
+        _item.HienThi = controls['HienThi']?.value ?? false;
+        _item.KichHoat = controls['KichHoat']?.value ?? false;
+        _item.TenNamHoc = '';
+        _item.TenKhoaHoc = '';
         return _item;
     }
+
+    styleConversionNull(item: any) {
+        if (item === '' || item === undefined || item === null) return null;
+        return item;
+    }
+
     onSubmit(withBack: boolean = false) {
         this.hasFormErrors = false;
         const controls = this.itemForm.controls;
+
         /* check form */
         if (this.itemForm.invalid) {
             Object.keys(controls).forEach(controlName =>
@@ -148,24 +163,31 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
             this.hasFormErrors = true;
             return;
         }
-        //xóa
-        // console.log('updatedegree', updatedegree);
-        // const startDate = this.itemForm.controls['ThoiGianNhanHSTuNgay'].value;
-        // const startDate = this.itemForm.get('ThoiGianLayHSDenNgay')?.value;
-        // const valid = this.valiDateRange(startDate, startDate);
-        // console.log('ngày', startDate);
-        // console.log('valid', valid);
-        // console.log('form', controls);
-        // const tuNgay = this.itemForm.get('ThoiGianLayHSTuNgay')?.value;
-
-        this.itemForm.get('ThoiGianLayHSTuNgay')?.valueChanges.subscribe(val => {
-            console.log('Người dùng vừa thay đổi ngày thành:', val);
-            // Bạn có thể thực hiện so sánh logic ngay tại đây
-        });
-
         const updatedegree = this.prepareData();
 
+        const ThoiGianLayHSTuNgay = this.itemForm.get('ThoiGianLayHSTuNgay')?.value;
+        const ThoiGianLayHSDenNgay = this.itemForm.get('ThoiGianLayHSDenNgay')?.value;
+        const ThoiGianNhanHSTuNgay = this.itemForm.get('ThoiGianNhanHSTuNgay')?.value;
+        const ThoiGianNhanHSDenNgay = this.itemForm.get('ThoiGianNhanHSDenNgay')?.value;
 
+        if (ThoiGianNhanHSTuNgay && ThoiGianNhanHSDenNgay) {
+            if (this.isValidDate(ThoiGianNhanHSTuNgay, ThoiGianNhanHSDenNgay)) {
+                this.NotificationCustom("Thời gian nhận hồ sơ đến ngày phải lớn hơn thời gian nhận hồ sơ từ ngày");
+                return;
+            }
+        }
+
+        if (ThoiGianLayHSTuNgay && ThoiGianLayHSDenNgay) {
+            if (this.isValidDate(ThoiGianLayHSTuNgay, ThoiGianLayHSDenNgay)) {
+                this.NotificationCustom("Thời gian lấy hồ sơ đến ngày phải lớn hơn thời gian lấy hồ sơ từ ngày");
+                return;
+            }
+        }
+
+        if (Number(updatedegree.Dot) > 255) {
+            this.NotificationCustom("Đợt không vượt quá 255");
+            return;
+        }
 
         if (updatedegree.Id > 0) {
             this.Update(updatedegree);
@@ -252,6 +274,7 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
         const keyCode = e.keyCode;
         const allowedKeys = [8, 9, 37, 39, 46]; // Backspace, Tab, Left, Right, Delete
         const inputValue = e.target as HTMLInputElement;
+        const maxSoThuTu = 2147483647;
 
         // 1. Nếu là phím điều khiển (Xóa, Di chuyển) -> CHO QUA LUÔN (return sớm)
         if (allowedKeys.includes(keyCode)) {
@@ -262,13 +285,14 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
         const isNumber = (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105);
 
         // 3. Nếu KHÔNG PHẢI số HOẶC (LÀ số nhưng đã đủ 10 ký tự) -> CHẶN
-        if (!isNumber || (isNumber && inputValue.value.length >= 10)) {
+        if (!isNumber || (isNumber && Number(inputValue.value) > maxSoThuTu)) {
+            //Hiển thị thông báo nếu nhập quá 10 chữ số
+            this.Notification();
             // Chỉ chặn nếu không phải là đang bôi đen để ghi đè
             if (inputValue.selectionStart === inputValue.selectionEnd) {
                 e.preventDefault();
             }
         }
-
     }
 
     valiDateRange(strartDateString: string, endDateString: string): boolean {
@@ -276,8 +300,95 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
             return true;
         const startDate = new Date(strartDateString);
         const endDate = new Date(endDateString);
-        //xóa
-        console.log("ngày ", startDate, endDate);
         return endDate.getTime() >= startDate.getTime();
+    }
+
+    getListNamHoc() {
+        this.DotTuyenSinhService.getListNamHoc().subscribe(data => {
+            if (data || data.status === 1) {
+                this.listNamHoc = data.data;
+                //là một phương thức được sử dụng để ép buộc (force) Angular thực hiện quy trình kiểm tra thay đổi
+                this.changeDetectorRefs.detectChanges();
+            }
+            else {
+                this.listNamHoc = [];
+            }
+        })
+    }
+
+    getListKhoaHoc() {
+        this.DotTuyenSinhService.getListKhoaHoc().subscribe(data => {
+            if (data || data.status === 1) {
+                this.listKhoaHoc = data.data;
+            }
+            else {
+                this.listKhoaHoc = [];
+            }
+        })
+    }
+
+    Notification() {
+        Swal.fire({
+            title: "Thông báo!",
+            text: "Đợt không được quá 2,147,483,647",
+            icon: "info",
+            confirmButtonText: "Đồng ý",
+            confirmButtonColor: "rgb(0, 81, 255)"
+        })
+    }
+
+    NotificationCustom(text: string) {
+        Swal.fire({
+            title: "Thông báo!",
+            text: text,
+            icon: "info",
+            confirmButtonText: "Đồng ý",
+            confirmButtonColor: "rgb(255, 0, 68)"
+        })
+    }
+
+    isValidDate(fromDate: any, toDate: any): boolean {
+        const date1 = fromDate ? new Date(fromDate).getTime() : 0;
+        const date2 = toDate ? new Date(toDate).getTime() : 0;
+        if (toDate < fromDate)
+            return true;
+        return false;
+    }
+
+    formatDateCustom(date: any): string {
+        if (!date) return '';
+        const d = new Date(date);
+        const month = '' + (d.getMonth() + 1);
+        const day = '' + d.getDate();
+        const year = d.getFullYear();
+        return [year, month.padStart(2, '0'), day.padStart(2, '0')].join('-');
+    }
+
+    checkDate(categori: any) {
+        switch (categori) {
+            case "ThoiGianNhanHSDenNgay": {
+                this.checkDateRange(this.itemForm.get("ThoiGianNhanHSTuNgay"), this.itemForm.get("ThoiGianNhanHSDenNgay"), "Vui lòng nhập Thời gian nhận hồ sơ từ ngày", "Thời gian nhận hồ sơ đến ngày phải lớn hơn thời gian nhận hồ sơ từ ngày");
+                break;
+            }
+            case "ThoiGianLayHSDenNgay": {
+                this.checkDateRange(this.itemForm.get("ThoiGianLayHSTuNgay"), this.itemForm.get("ThoiGianLayHSDenNgay"), "Vui lòng nhập Thời gian lấy hồ sơ từ ngày", "Thời gian lấy hồ sơ đến ngày phải lớn hơn thời gian lấy hồ sơ từ ngày");
+                break;
+            }
+        }
+    }
+
+    checkDateRange(fromDate: AbstractControl | null, toDate: AbstractControl | null, fromDateNoti: string, toDateNoti: string) {
+        const tuNgayVal = fromDate?.value;
+        const denNgayVal = toDate?.value;
+        const tuNgay = new Date(tuNgayVal)?.getTime();
+        const denNgay = new Date(denNgayVal)?.getTime();
+        if (!tuNgay && denNgay) {
+            this.NotificationCustom(fromDateNoti)
+            toDate?.setValue(null);
+        }
+        if (denNgay < tuNgay) {
+            this.NotificationCustom(toDateNoti);
+            toDate?.setValue(null);
+        }
     }
 }

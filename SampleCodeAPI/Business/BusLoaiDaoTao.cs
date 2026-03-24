@@ -91,8 +91,8 @@ namespace SampleCodeAPI.Business
                                 NoiDung = r["NoiDung"].ToString(),
                                 SoThuTu = r["SoThuTu"].ToString(),                                
                                 GhiChu = !String.IsNullOrEmpty(r["GhiChu"].ToString()) ? r["GhiChu"].ToString() : "",
-                                NguoiTao = r["NguoiTao"].ToString(),
-                                NgayTao = r["NgayTao"].ToString(),
+                                CreatedBy = r["CreatedBy"].ToString(),
+                                CreatedDate = r["CreatedDate"].ToString(),
                             }).ToList();
 
                 model.data = data;
@@ -146,8 +146,8 @@ namespace SampleCodeAPI.Business
                                 NoiDung = r["NoiDung"].ToString(),
                                 SoThuTu = r["SoThuTu"].ToString(),
                                 GhiChu = !String.IsNullOrEmpty(r["GhiChu"].ToString()) ? r["GhiChu"].ToString() : "",
-                                NguoiTao = r["NguoiTao"].ToString(),
-                                NgayTao = r["NgayTao"].ToString(),
+                                CreatedBy = r["CreatedBy"].ToString(),
+                                CreatedDate = r["CreatedDate"].ToString(),
                             }).FirstOrDefault();
 
                 model.data = data;
@@ -186,13 +186,20 @@ namespace SampleCodeAPI.Business
             {
                 val.Add("MaLoaiDT", data.MaLoaiDT);
                 val.Add("TenLoaiDT", data.TenLoaiDT);
-                val.Add("TenTiengAnh", data.TenTiengAnh);
-                val.Add("NoiDung", data.NoiDung);
-                val.Add("SoThuTu", data.SoThuTu);
+                val.Add("TenTiengAnh", (object)data.TenTiengAnh??DBNull.Value);
+                val.Add("NoiDung", (object)data.NoiDung??DBNull.Value);
+                if(data.SoThuTu <= 0)
+                {
+                    val.Add("SoThuTu", DBNull.Value);
+                }
+                else
+                {
+                    val.Add("SoThuTu", data.SoThuTu);
+                }
                 val.Add("GhiChu", data.GhiChu);
-                val.Add("IsDel", data.IsDel);
-                val.Add("NguoiTao", loginData.customdata.jeeAccount.customerID);
-                val.Add("NgayTao", DateTime.UtcNow);
+                val.Add("IsDel", false);
+                val.Add("CreatedBy", loginData.customdata.jeeAccount.customerID);
+                val.Add("CreatedDate", DateTime.UtcNow);
 
                 if (cnn.Insert(val, "LoaiDaoTao") == 1)
                 {
@@ -251,8 +258,17 @@ namespace SampleCodeAPI.Business
                 val.Add("TenLoaiDT", data.TenLoaiDT);
                 val.Add("TenTiengAnh", data.TenTiengAnh);
                 val.Add("NoiDung", data.NoiDung);
-                val.Add("SoThuTu", data.SoThuTu);
+                if (data.SoThuTu <= 0)
+                {
+                    val.Add("SoThuTu", DBNull.Value);
+                }
+                else
+                {
+                    val.Add("SoThuTu", data.SoThuTu);
+                }
                 val.Add("GhiChu", data.GhiChu);
+                val.Add("UpdatedDate", DateTime.UtcNow);
+                val.Add("UpdatedBy", loginData.customdata.jeeAccount.customerID);
 
                 if (cnn.Update(val, new SqlConditions { { "id", data.id } }, "LoaiDaoTao") == 1)
                 {
@@ -283,6 +299,8 @@ namespace SampleCodeAPI.Business
             {
                 Hashtable val = new Hashtable();
                 val.Add("IsDel", 1);
+                val.Add("DeletedDate", DateTime.UtcNow);
+                val.Add("DeletedBy", loginData.customdata.jeeAccount.customerID);
 
                 if (cnn.Update(val, new SqlConditions { { "id", id } }, "LoaiDaoTao") == 1)
                 {
@@ -314,6 +332,7 @@ namespace SampleCodeAPI.Business
                 SqlConditions conds = new SqlConditions();
                 string sql = "select * from LoaiDaoTao where MaLoaiDT = @Code  and IsDel=0";
                 conds.Add("Code", name);
+
 
                 if (!string.IsNullOrEmpty(Id))
                 {

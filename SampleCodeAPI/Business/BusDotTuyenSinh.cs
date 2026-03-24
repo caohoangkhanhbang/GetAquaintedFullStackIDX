@@ -15,7 +15,7 @@ namespace SampleCodeAPI.Business
             {
 
                 SqlConditions Conds = new SqlConditions();
-                string sqlq = "", orderByStr = " TenDotTS ", whereStr = " HienThi = 1 ";
+                string sqlq = "", orderByStr = " TenDotTS ", whereStr = " dts.IsDel = 0 ";
                 Dictionary<string, string> sortableFields = new Dictionary<string, string>
                 {
                     { "TenDotTS", "TenDotTS"},
@@ -33,7 +33,7 @@ namespace SampleCodeAPI.Business
                     whereStr += " and (Code like @kw or Title like @kw)";
                     Conds.Add("kw", "%" + query.filter["keyword"] + "%");
                 }
-                sqlq = $@"select count(*) AS tong from (select * from DotTuyenSinh
+                sqlq = $@"select count(*) AS tong from (select * from DotTuyenSinh dts
                                   where {whereStr} ) as a";
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
                 var total = int.Parse(dt.Rows[0]["tong"].ToString());
@@ -65,13 +65,13 @@ namespace SampleCodeAPI.Business
 
                     if (query.page > 1)
                     {
-                        sqlq = $@"  select DotTuyenSinh.* from DotTuyenSinh
+                        sqlq = $@"  select kh.TenKhoaHoc, nh.NamHoc as TenNamHoc, dts.* from DotTuyenSinh dts inner join DanhSachKhoaHoc kh on dts.KhoaHoc = kh.id inner join DanhSachNamHoc nh on dts.NamHoc = nh.id
                                   where {whereStr} order by {orderByStr} 
                                   OFFSET @firstRecord ROWS FETCH NEXT @record ROWS ONLY";
                     }
                     else if (query.page == 1)
                     {
-                        sqlq = $@"  select top(@record) DotTuyenSinh.* from DotTuyenSinh
+                        sqlq = $@"  select top(@record) kh.TenKhoaHoc, nh.NamHoc as TenNamHoc, dts.* from DotTuyenSinh dts inner join DanhSachKhoaHoc kh on dts.KhoaHoc = kh.id inner join DanhSachNamHoc nh on dts.NamHoc = nh.id
                                   where {whereStr} order by {orderByStr} ";
 
                     }
@@ -80,11 +80,10 @@ namespace SampleCodeAPI.Business
 
                 }
                 dt = cnn.CreateDataTable(sqlq, Conds);
-                                
+
                 var data = (from r in dt.AsEnumerable()
                             select new
                             {
-                               
                                 Id = r["Id"] != DBNull.Value ? Convert.ToInt32(r["Id"]) : 0,
 
                                 NamHoc = r["NamHoc"] != DBNull.Value ? Convert.ToInt16(r["NamHoc"]) : (short?)null,
@@ -93,25 +92,33 @@ namespace SampleCodeAPI.Business
 
                                 TenDotTS = r["TenDotTS"]?.ToString(), // String tự động nhận null nếu r["TenDotTS"] là DBNull
 
-                                KhoaHoc = r["KhoaHoc"]?.ToString(),
+                                KhoaHoc = r["KhoaHoc"] != DBNull.Value ? Convert.ToInt16(r["KhoaHoc"]) : (short?)null,
 
-                                ThoiGianNhanHSTuNgay = r["ThoiGianNhanHSTuNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
-                                ThoiGianNhanHSDengay = r["ThoiGianNhanHSDenNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+                                ThoiGianNhanHSTuNgay = r["ThoiGianNhanHSTuNgay"] != DBNull.Value ? Convert.ToDateTime(r["ThoiGianNhanHSTuNgay"]) : (DateTime?)null,
+
+                                ThoiGianNhanHSDenNgay = r["ThoiGianNhanHSDenNgay"] != DBNull.Value ? Convert.ToDateTime(r["ThoiGianNhanHSDenNgay"]) : (DateTime?)null,
 
                                 NgayInGBTT = r["NgayInGBTT"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
 
-                                ThoiGianLayHSTuNgay = r["ThoiGianLayHSTuNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
-                                ThoiGianLayHSDenNgay = r["ThoiGianLayHSDenNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+                                ThoiGianLayHSTuNgay = r["ThoiGianLayHSTuNgay"] != DBNull.Value ? Convert.ToDateTime(r["ThoiGianLayHSTuNgay"]) : (DateTime?)null,
+
+                                ThoiGianLayHSDenNgay = r["ThoiGianLayHSDenNgay"] != DBNull.Value ? Convert.ToDateTime(r["ThoiGianLayHSDenNgay"]) : (DateTime?)null,
 
                                 NgayNhapHocDK = r["NgayNhapHocDK"] != DBNull.Value ? Convert.ToDateTime(r["NgayNhapHocDK"]) : (DateTime?)null,
 
-                                GhiChu = r["GhiChu"]?.ToString(),
+                                GhiChu = r["GhiChu"]?.ToString() ?? "",
 
-                                NguoiTao = r["NguoiTao"]?.ToString(),
+                                CreatedBy = r["CreatedBy"]?.ToString() ?? "",
 
-                                NgayTao = r["NgayTao"] != DBNull.Value ? Convert.ToDateTime(r["NgayTao"]) : (DateTime?)null,
+                                CreatedDate = r["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(r["CreatedDate"]) : (DateTime?)null,
 
                                 HienThi = r["HienThi"] != DBNull.Value ? Convert.ToBoolean(r["HienThi"]) : false,
+
+                                KichHoat = r["KichHoat"] != DBNull.Value ? Convert.ToBoolean(r["KichHoat"]) : false,
+
+                                TenKhoaHoc = r["TenKhoaHoc"]?.ToString() ?? "",
+
+                                TenNamHoc = r["TenNamHoc"]?.ToString() ?? "",
 
                             }).ToList();
 
@@ -160,8 +167,6 @@ namespace SampleCodeAPI.Business
                 var data = (from r in dt.AsEnumerable()
                             select new
                             {
-
-
                                 Id = r["Id"] != DBNull.Value ? Convert.ToInt32(r["Id"]) : 0,
 
                                 NamHoc = r["NamHoc"] != DBNull.Value ? Convert.ToInt16(r["NamHoc"]) : (short?)null,
@@ -170,25 +175,29 @@ namespace SampleCodeAPI.Business
 
                                 TenDotTS = r["TenDotTS"]?.ToString(), // String tự động nhận null nếu r["TenDotTS"] là DBNull
 
-                                KhoaHoc = r["KhoaHoc"]?.ToString(),
+                                KhoaHoc = r["KhoaHoc"] != DBNull.Value ? Convert.ToInt16(r["KhoaHoc"]) : (short?)null,
 
-                                ThoiGianNhanHSTuNgay = r["ThoiGianNhanHSTuNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
-                                ThoiGianNhanHSDengay = r["ThoiGianNhanHSDenNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+                                ThoiGianNhanHSTuNgay = r["ThoiGianNhanHSTuNgay"] != DBNull.Value ? Convert.ToDateTime(r["ThoiGianNhanHSTuNgay"]) : (DateTime?)null,
+
+                                ThoiGianNhanHSDenNgay = r["ThoiGianNhanHSDenNgay"] != DBNull.Value ? Convert.ToDateTime(r["ThoiGianNhanHSDenNgay"]) : (DateTime?)null,
 
                                 NgayInGBTT = r["NgayInGBTT"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
 
-                                ThoiGianLayHSTuNgay = r["ThoiGianLayHSTuNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
-                                ThoiGianLayHSDenNgay = r["ThoiGianLayHSDenNgay"] != DBNull.Value ? Convert.ToDateTime(r["NgayInGBTT"]) : (DateTime?)null,
+                                ThoiGianLayHSTuNgay = r["ThoiGianLayHSTuNgay"] != DBNull.Value ? Convert.ToDateTime(r["ThoiGianLayHSTuNgay"]) : (DateTime?)null,
+
+                                ThoiGianLayHSDenNgay = r["ThoiGianLayHSDenNgay"] != DBNull.Value ? Convert.ToDateTime(r["ThoiGianLayHSDenNgay"]) : (DateTime?)null,
 
                                 NgayNhapHocDK = r["NgayNhapHocDK"] != DBNull.Value ? Convert.ToDateTime(r["NgayNhapHocDK"]) : (DateTime?)null,
 
-                                GhiChu = r["GhiChu"]?.ToString(),
+                                GhiChu = r["GhiChu"]?.ToString() ?? "",
 
-                                NguoiTao = r["NguoiTao"]?.ToString(),
+                                CreatedBy = r["CreatedBy"]?.ToString() ?? "",
 
-                                NgayTao = r["NgayTao"] != DBNull.Value ? Convert.ToDateTime(r["NgayTao"]) : (DateTime?)null,
+                                CreatedDate = r["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(r["CreatedDate"]) : (DateTime?)null,
 
                                 HienThi = r["HienThi"] != DBNull.Value ? Convert.ToBoolean(r["HienThi"]) : false,
+
+                                KichHoat = r["KichHoat"] != DBNull.Value ? Convert.ToBoolean(r["KichHoat"]) : false,
 
                             }).FirstOrDefault();
 
@@ -230,17 +239,18 @@ namespace SampleCodeAPI.Business
                 val.Add("Dot", data.Dot);
                 val.Add("TenDotTS", data.TenDotTS);
                 val.Add("KhoaHoc", data.KhoaHoc);
-                val.Add("ThoiGianNhanHSTuNgay", data.ThoiGianNhanHSTuNgay);
-                val.Add("ThoiGianNhanHSDenNgay", data.ThoiGianNhanHSDenNgay);
-                val.Add("NgayInGBTT", data.NgayInGBTT);
-                val.Add("ThoiGianLayHSTuNgay", data.ThoiGianLayHSTuNgay);
-                val.Add("ThoiGianLayHSDenNgay", data.ThoiGianLayHSDenNgay);
-                val.Add("NgayNhapHocDK", data.NgayNhapHocDK);
+                val.Add("ThoiGianNhanHSTuNgay", (object)data.ThoiGianNhanHSTuNgay??DBNull.Value);
+                val.Add("ThoiGianNhanHSDenNgay", (object)data.ThoiGianNhanHSDenNgay??DBNull.Value);
+                val.Add("NgayInGBTT", (object)data.NgayInGBTT??DBNull.Value);
+                val.Add("ThoiGianLayHSTuNgay", (object)data.ThoiGianLayHSTuNgay??DBNull.Value);
+                val.Add("ThoiGianLayHSDenNgay", (object)data.ThoiGianLayHSDenNgay??DBNull.Value);
+                val.Add("NgayNhapHocDK", (object)data.NgayNhapHocDK??DBNull.Value);
                 val.Add("GhiChu", data.GhiChu);
-
                 val.Add("HienThi", data.HienThi);
-                val.Add("NguoiTao", loginData.customdata.jeeAccount.userID);
-                val.Add("NgayTao", DateTime.Now); 
+                val.Add("KichHoat", data.KichHoat);
+                val.Add("CreatedBy", loginData.customdata.jeeAccount.customerID);
+                val.Add("CreatedDate", DateTime.UtcNow);
+                val.Add("IsDel", false);
 
                 if (cnn.Insert(val, "DotTuyenSinh") == 1)
                 {
@@ -299,16 +309,18 @@ namespace SampleCodeAPI.Business
                 val.Add("Dot", data.Dot);
                 val.Add("TenDotTS", data.TenDotTS);
                 val.Add("KhoaHoc", data.KhoaHoc);
-                val.Add("ThoiGianNhanHSTuNgay", data.ThoiGianNhanHSTuNgay);
-                val.Add("ThoiGianNhanHSDenNgay", data.ThoiGianNhanHSDenNgay);
-                val.Add("NgayInGBTT", data.NgayInGBTT);
-                val.Add("ThoiGianLayHSTuNgay", data.ThoiGianLayHSTuNgay);
-                val.Add("ThoiGianLayHSDenNgay", data.ThoiGianLayHSDenNgay);
-                val.Add("NgayNhapHocDK", data.NgayNhapHocDK);
-                val.Add("GhiChu", data.GhiChu);
-
-                // Các trường hệ thống và trạng thái
+                val.Add("ThoiGianNhanHSTuNgay", (object)data.ThoiGianNhanHSTuNgay ?? DBNull.Value);
+                val.Add("ThoiGianNhanHSDenNgay", (object)data.ThoiGianNhanHSDenNgay ?? DBNull.Value);
+                val.Add("NgayInGBTT", (object)data.NgayInGBTT ?? DBNull.Value);
+                val.Add("ThoiGianLayHSTuNgay", (object)data.ThoiGianLayHSTuNgay ?? DBNull.Value);
+                val.Add("ThoiGianLayHSDenNgay", (object)data.ThoiGianLayHSDenNgay ?? DBNull.Value);
+                val.Add("NgayNhapHocDK", (object)data.NgayNhapHocDK ?? DBNull.Value);
+                val.Add("GhiChu", (object)data.GhiChu ?? DBNull.Value);
                 val.Add("HienThi", data.HienThi);
+                val.Add("KichHoat", data.KichHoat);
+                val.Add("UpdatedDate", DateTime.UtcNow);
+                val.Add("UpdatedBy", loginData.customdata.jeeAccount.customerID);
+
                 if (cnn.Update(val, new SqlConditions { { "id", data.Id } }, "DotTuyenSinh") == 1)
                 {
                     model.status = 1;
@@ -338,7 +350,10 @@ namespace SampleCodeAPI.Business
             {
                 Hashtable val = new Hashtable();
                 val.Add("HienThi", 0);
-               
+                val.Add("IsDel", true);
+                val.Add("DeletedDate", DateTime.UtcNow);
+                val.Add("DeletedBy", loginData.customdata.jeeAccount.customerID);
+
                 if (cnn.Update(val, new SqlConditions { { "id", id } }, "DotTuyenSinh") == 1)
                 {
                     model.status = 1;

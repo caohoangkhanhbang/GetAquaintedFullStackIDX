@@ -82,14 +82,14 @@
                     <th mat-header-cell *matHeaderCellDef style="flex: 0 0 25%">
                         {{ 'LOAIDAOTAO.nguoitao' | translate }}
                     </th>
-                    <td mat-cell *matCellDef="let item" style="flex: 0 0 25%">{{item.NguoiTao}}</td>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 25%">{{item.CreatedBy}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="CreatedDate">
                     <th mat-header-cell *matHeaderCellDef style="flex: 0 0 15%">
                         {{ 'LOAIDAOTAO.ngaytao' | translate }}
                     </th>
-                    <td mat-cell *matCellDef="let item" style="flex: 0 0 15%">{{item.NgayTao|date:'dd/MM/yyyy'}}
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 15%">{{item.CreatedDate|date:'dd/MM/yyyy'}}
                     </td>
                 </ng-container>
 

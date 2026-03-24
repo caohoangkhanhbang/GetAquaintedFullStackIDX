@@ -17,7 +17,7 @@ namespace SampleCodeAPI.Business
 
                 SqlConditions Conds = new SqlConditions();
                 string sqlq = "";
-                sqlq = $@" select * from DanhSachNamHoc where HienThi = 1";
+                sqlq = $@"select * from DanhSachNamHoc where IsDel = 0";
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
                 if (cnn.LastError != null || dt == null)
                 {
@@ -62,7 +62,7 @@ namespace SampleCodeAPI.Business
 
                 SqlConditions Conds = new SqlConditions();
                 string sqlq = "";
-                sqlq = $@" select * from DanhSachKhoaHoc where HienThi = 1";
+                sqlq = $@"select * from DanhSachKhoaHoc where IsDel = 0";
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
                 if (cnn.LastError != null || dt == null)
                 {
@@ -87,8 +87,8 @@ namespace SampleCodeAPI.Business
                             select new
                             {
                                 Id = r["id"],
-                                NamHoc = r["TenKhoaHoc"] != DBNull.Value ? r["TenKhoaHoc"] : "",
-                                NienHoc = r["NamHoc"] != DBNull.Value ? r["NamHoc"] : "",
+                                TenKhoaHoc = r["TenKhoaHoc"] != DBNull.Value ? r["TenKhoaHoc"] : "",
+                                NamHoc = r["NamHoc"] != DBNull.Value ? r["NamHoc"] : "",
                             }).ToList();
 
                 model.data = data;
