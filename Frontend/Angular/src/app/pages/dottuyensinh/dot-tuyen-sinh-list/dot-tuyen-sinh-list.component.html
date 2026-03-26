@@ -73,7 +73,8 @@
                         {{ 'DOTTUYENSINH.thoigiannhanHS' | translate }}
                     </th>
                     <td mat-cell *matCellDef="let item" style="flex: 0 0 25%">
-                        <ng-container *ngIf="item.ThoiGianNhanHSTuNgay && item.ThoiGianNhanHSDenNgay || item.ThoiGianNhanHSTuNgay || item.ThoiGianNhanHSDenNgay">
+                        <ng-container
+                            *ngIf="item.ThoiGianNhanHSTuNgay && item.ThoiGianNhanHSDenNgay || item.ThoiGianNhanHSTuNgay || item.ThoiGianNhanHSDenNgay">
                             {{item.ThoiGianNhanHSTuNgay |
                             date:'dd/MM/yyyy'}} -
                             {{item.ThoiGianNhanHSDenNgay | date:'dd/MM/yyyy'}}
@@ -95,7 +96,8 @@
                         {{ 'DOTTUYENSINH.thoigianlayHS' | translate }}
                     </th>
                     <td mat-cell *matCellDef="let item" style="flex: 0 0 15%">
-                        <ng-container *ngIf="item.ThoiGianLayHSTuNgay && item.ThoiGianLayHSDenNgay">
+                        <ng-container
+                            *ngIf="item.ThoiGianLayHSTuNgay && item.ThoiGianLayHSDenNgay || item.ThoiGianLayHSTuNgay || item.ThoiGianLayHSDenNgay">
                             {{item.ThoiGianLayHSTuNgay | date:'dd/MM/yyyy'}} -
                             {{item.ThoiGianLayHSDenNgay | date:'dd/MM/yyyy'}}
                         </ng-container>
