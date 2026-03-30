@@ -19,7 +19,8 @@ import { TokenStorage } from 'src/app/modules/auth/services/token-storage.servic
 import { MatPaginatorIntlCustom } from 'src/app/modules/auth/services/config-mat-page';
 import { DotTuyenSinhEditDialogComponent } from '../dot-tuyen-sinh-edit/dot-tuyen-sinh-edit.dialog.component';
 import { LayoutUtilsService } from 'src/app/_metronic/core/utils/layout-utils.service';
-import { BacDaoTaoModel } from '../../danhmuc/bac-dao-tao/model/bac-dao-tao.model';
+
+
 
 @Component({
     selector: 'app-dot-tuyen-sinh-list',
@@ -87,6 +88,10 @@ export class DotTuyenSinhTableListComponent implements OnInit, AfterViewInit, On
             this.paginator.pageIndex,
             this.paginator.pageSize
         );
+
+        if (this.paginator.pageSize)
+            this.pageSize = this.paginator.pageSize;
+
         this.dataSource.loadList(queryParams);
 
         setTimeout((x: any) => {
@@ -96,7 +101,10 @@ export class DotTuyenSinhTableListComponent implements OnInit, AfterViewInit, On
 
     loadPage() {
         var arrayData: any[] = [];
+        if(this.paginator.pageSize)
+            this.pageSize = this.paginator.pageSize;
         this.dataSource.entitySubject.subscribe(res => arrayData = res);
+
         if (arrayData !== undefined && arrayData?.length == 0) {
             var totalRecord = 0;
             this.dataSource.paginatorTotal$.subscribe(tt => totalRecord = tt)
@@ -106,7 +114,7 @@ export class DotTuyenSinhTableListComponent implements OnInit, AfterViewInit, On
                     this.sort.direction,
                     this.sort.active,
                     this.paginator.pageIndex = this.paginator.pageIndex - 1,
-                    this.paginator.pageSize
+                    this.paginator.pageSize,
                 );
                 this.dataSource.loadList(queryParams1);
             }

@@ -16,14 +16,47 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatSelectModule } from '@angular/material/select';
 import { from } from 'rxjs';
+import { values } from 'lodash';
+//thêm các thư viện xử lý ngày giờ
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import moment from 'moment'; // Đảm bảo đã import moment ở đầu file
+
+// //Mới thêm
+// // import { MatDatepickerModule } from '@angular/material/datepicker';
+// import { MatInputModule } from '@angular/material/input';
+// // import { MatFormFieldModule } from '@angular/material/form-field';
+// import { provideNativeDateAdapter } from '@angular/material/core'; // Adapter mặc định
+
+//thêm
+export const MY_FORMATS = {
+    parse: {
+        dateInput: 'DD/MM/YYYY',
+    },
+    display: {
+        dateInput: 'DD/MM/YYYY',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY',
+    },
+};
+
+
 @Component({
     selector: 'app-dot-tuyen-sinh-edit-dialog',
     standalone: true,
     providers: [DotTuyenSinhService, LayoutUtilsService,
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
         { provide: MAT_DATE_LOCALE, useValue: 'vi' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     ],
-    imports: [CommonModule, FormsModule, MatFormFieldModule, MatTooltipModule, TranslateModule, ReactiveFormsModule, MatIconModule, MatDatepickerModule, NgxMatSelectSearchModule, MatSelectModule],
+    imports: [CommonModule, FormsModule, MatFormFieldModule, MatTooltipModule, TranslateModule, ReactiveFormsModule, MatIconModule, MatDatepickerModule, NgxMatSelectSearchModule, MatSelectModule,
+
+        MatInputModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+    ],
     templateUrl: './dot-tuyen-sinh-edit.dialog.component.html',
 })
 export class DotTuyenSinhEditDialogComponent implements OnInit {
@@ -127,17 +160,33 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
     prepareData(): DotTuyenSinhModel {
         const controls = this.itemForm.controls;
         const _item = new DotTuyenSinhModel();
+
+        // Hàm hỗ trợ format an toàn để lưu xuống database thành yyyy-mm-dd
+        const formatSafe = (val: any) => {
+            if (!val) return null;
+            const m = moment(val);
+            return m.isValid() ? m.format("YYYY-MM-DD") : null;
+        };
+
+        const ThoiGianLayHSTuNgay = controls['ThoiGianLayHSTuNgay']?.value;
+        const ThoiGianLayHSDenNgay = controls['ThoiGianLayHSDenNgay']?.value;
+        const ThoiGianNhanHSTuNgay = controls['ThoiGianNhanHSTuNgay']?.value;
+        const ThoiGianNhanHSDenNgay = controls['ThoiGianNhanHSDenNgay']?.value;
+        const NgayInGBTT = controls['NgayInGBTT']?.value;
+        const NgayNhapHocDK = controls['NgayNhapHocDK']?.value;
+
+
         _item.Id = this.item.Id;
         _item.NamHoc = controls['NamHoc']?.value ?? 0;
         _item.Dot = controls['Dot']?.value ?? '';
         _item.TenDotTS = controls['TenDotTS']?.value ?? '';
         _item.KhoaHoc = controls['KhoaHoc']?.value ?? 0;
-        _item.ThoiGianNhanHSTuNgay = this.styleConversionNull(controls['ThoiGianNhanHSTuNgay']?.value);
-        _item.ThoiGianNhanHSDenNgay = this.styleConversionNull(controls['ThoiGianNhanHSDenNgay']?.value);
-        _item.NgayInGBTT = this.styleConversionNull(controls['NgayInGBTT']?.value);
-        _item.ThoiGianLayHSTuNgay = this.styleConversionNull(controls['ThoiGianLayHSTuNgay']?.value);
-        _item.ThoiGianLayHSDenNgay = this.styleConversionNull(controls['ThoiGianLayHSDenNgay']?.value);
-        _item.NgayNhapHocDK = this.styleConversionNull(controls['NgayNhapHocDK']?.value);
+        _item.ThoiGianNhanHSTuNgay = formatSafe(ThoiGianNhanHSTuNgay);
+        _item.ThoiGianNhanHSDenNgay = formatSafe(ThoiGianNhanHSDenNgay);
+        _item.NgayInGBTT = formatSafe(NgayInGBTT);
+        _item.ThoiGianLayHSTuNgay = formatSafe(ThoiGianLayHSTuNgay);
+        _item.ThoiGianLayHSDenNgay = formatSafe(ThoiGianLayHSDenNgay);
+        _item.NgayNhapHocDK = formatSafe(NgayNhapHocDK);
         _item.GhiChu = controls['GhiChu']?.value ?? '';
         _item.HienThi = controls['HienThi']?.value ?? false;
         _item.KichHoat = controls['KichHoat']?.value ?? false;
@@ -147,7 +196,8 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
     }
 
     styleConversionNull(item: any) {
-        if (item === '' || item === undefined || item === null) return null;
+        if (item === '' || item === undefined || item === null)
+            return null;
         return item;
     }
 
@@ -188,6 +238,8 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
             this.NotificationCustom("Đợt không vượt quá 255");
             return;
         }
+
+
 
         if (updatedegree.Id > 0) {
             this.Update(updatedegree);
@@ -287,7 +339,7 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
         // 3. Nếu KHÔNG PHẢI số HOẶC (LÀ số nhưng đã đủ 10 ký tự) -> CHẶN
         if (!isNumber || (isNumber && Number(inputValue.value) > maxSoThuTu)) {
             //Hiển thị thông báo nếu nhập quá 10 chữ số
-            this.Notification();
+            this.NotificationCustom("Đợt không được quá 2,147,483,647");
             // Chỉ chặn nếu không phải là đang bôi đen để ghi đè
             if (inputValue.selectionStart === inputValue.selectionEnd) {
                 e.preventDefault();
@@ -327,16 +379,6 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
         })
     }
 
-    Notification() {
-        Swal.fire({
-            title: "Thông báo!",
-            text: "Đợt không được quá 2,147,483,647",
-            icon: "info",
-            confirmButtonText: "Đồng ý",
-            confirmButtonColor: "rgb(0, 81, 255)"
-        })
-    }
-
     NotificationCustom(text: string) {
         Swal.fire({
             title: "Thông báo!",
@@ -368,6 +410,7 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
         switch (categori) {
             case "ThoiGianNhanHSDenNgay": {
                 this.checkDateRange(this.itemForm.get("ThoiGianNhanHSTuNgay"), this.itemForm.get("ThoiGianNhanHSDenNgay"), "Vui lòng nhập Thời gian nhận hồ sơ từ ngày", "Thời gian nhận hồ sơ đến ngày phải lớn hơn thời gian nhận hồ sơ từ ngày");
+                this.itemForm.get("ThoiGianNhanHSTuNgay")?.setValue("27/03/2025");
                 break;
             }
             case "ThoiGianLayHSDenNgay": {
@@ -391,4 +434,5 @@ export class DotTuyenSinhEditDialogComponent implements OnInit {
             toDate?.setValue(null);
         }
     }
+
 }

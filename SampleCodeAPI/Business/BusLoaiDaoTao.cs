@@ -14,7 +14,7 @@ namespace SampleCodeAPI.Business
             using (DpsConnection cnn = new DpsConnection(connect))
             {
                 SqlConditions Conds = new SqlConditions();
-                string sqlq = "", orderByStr = " TenLoaiDT ", whereStr = " Isdel = 0 ";
+                string sqlq = "", orderByStr = " SoThuTu ", whereStr = " Isdel = 0 ";
                 Dictionary<string, string> sortableFields = new Dictionary<string, string>
                 {
                     { "MaLoaiDT", "MaLoaiDT"},

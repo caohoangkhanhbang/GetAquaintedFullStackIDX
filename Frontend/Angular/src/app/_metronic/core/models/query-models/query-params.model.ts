@@ -13,7 +13,7 @@ export class QueryParamsModel {
     _sortOrder: string = 'asc',
     _sortField: string = '',
     _pageNumber: number = 0,
-    _pageSize: number = 10,
+    _pageSize: number = 50,
     _more: boolean = false
   ) {
     this.filter = _filter;

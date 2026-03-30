@@ -86,6 +86,10 @@ export class LoaiDaoTaoTableListComponent implements OnInit, AfterViewInit, OnDe
             this.paginator.pageIndex,
             this.paginator.pageSize
         );
+        
+        if (this.paginator.pageSize)
+            this.pageSize = this.paginator.pageSize;
+
         this.dataSource.loadList(queryParams);
 
         setTimeout((x: any) => {

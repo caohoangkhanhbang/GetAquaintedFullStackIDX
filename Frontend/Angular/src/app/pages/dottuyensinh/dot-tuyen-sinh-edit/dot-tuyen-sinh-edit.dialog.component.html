@@ -57,22 +57,37 @@
                                 </mat-select>
                             </div>
 
-                            <!-- thẻ ngày -->
+                            <!-- thẻ ngày sử dụng thư viện  -->
                             <div class="row">
                                 <div class="fv-row mb-7 col col-6">
                                     <label class="fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.thoigiannhanHS_tungay' |
                                         translate
                                         }}</label>
-                                    <input type="date" class="form-control form-control-solid"
-                                        formControlName="ThoiGianNhanHSTuNgay" />
+
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>Chọn ngày</mat-label>
+                                        <input matInput [matDatepicker]="ThoiGianNhanHSTuNgay"
+                                            formControlName="ThoiGianNhanHSTuNgay">
+                                        <mat-datepicker-toggle matSuffix
+                                            [for]="ThoiGianNhanHSTuNgay"></mat-datepicker-toggle>
+                                        <mat-datepicker #ThoiGianNhanHSTuNgay></mat-datepicker>
+                                    </mat-form-field>
+
                                 </div>
 
                                 <div class="fv-row mb-7 col col-6">
                                     <label class="fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.thoigiannhanHS_denngay' |
                                         translate }}</label>
-                                    <input type="date" class="form-control form-control-solid"
-                                        formControlName="ThoiGianNhanHSDenNgay"
-                                        (change)="checkDate('ThoiGianNhanHSDenNgay')" />
+
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>Chọn ngày</mat-label>
+                                        <input matInput [matDatepicker]="ThoiGianNhanHSDenNgay"
+                                            formControlName="ThoiGianNhanHSDenNgay"
+                                            (change)="checkDate('ThoiGianNhanHSDenNgay')">
+                                        <mat-datepicker-toggle matSuffix
+                                            [for]="ThoiGianNhanHSDenNgay"></mat-datepicker-toggle>
+                                        <mat-datepicker #ThoiGianNhanHSDenNgay></mat-datepicker>
+                                    </mat-form-field>
                                 </div>
                             </div>
 
@@ -81,17 +96,31 @@
                                     <label class="fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.thoigianlayHS_tungay' |
                                         translate
                                         }}</label>
-                                    <input type="date" class="form-control form-control-solid"
-                                        formControlName="ThoiGianLayHSTuNgay" />
+
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>Chọn ngày</mat-label>
+                                        <input matInput [matDatepicker]="ThoiGianLayHSTuNgay"
+                                            formControlName="ThoiGianLayHSTuNgay">
+                                        <mat-datepicker-toggle matSuffix
+                                            [for]="ThoiGianLayHSTuNgay"></mat-datepicker-toggle>
+                                        <mat-datepicker #ThoiGianLayHSTuNgay></mat-datepicker>
+                                    </mat-form-field>
                                 </div>
 
                                 <div class="fv-row mb-7 col col-6">
                                     <label class="fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.thoigianlayHS_denngay' |
                                         translate
                                         }}</label>
-                                    <input type="date" class="form-control form-control-solid"
-                                        formControlName="ThoiGianLayHSDenNgay"
-                                        (change)="checkDate('ThoiGianLayHSDenNgay')" />
+
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>Chọn ngày</mat-label>
+                                        <input matInput [matDatepicker]="ThoiGianLayHSDenNgay"
+                                            formControlName="ThoiGianLayHSDenNgay"
+                                            (change)="checkDate('ThoiGianLayHSDenNgay')">
+                                        <mat-datepicker-toggle matSuffix
+                                            [for]="ThoiGianLayHSDenNgay"></mat-datepicker-toggle>
+                                        <mat-datepicker #ThoiGianLayHSDenNgay></mat-datepicker>
+                                    </mat-form-field>
                                 </div>
                             </div>
 
@@ -99,17 +128,31 @@
                                 <div class="fv-row mb-7 col col-6">
                                     <label class="fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.ngayinGBTT' | translate
                                         }}</label>
-                                    <input type="date" class="form-control form-control-solid"
-                                        formControlName="NgayInGBTT" />
+
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>Chọn ngày</mat-label>
+                                        <input matInput [matDatepicker]="NgayInGBTT" formControlName="NgayInGBTT">
+                                        <mat-datepicker-toggle matSuffix [for]="NgayInGBTT"></mat-datepicker-toggle>
+                                        <mat-datepicker #NgayInGBTT></mat-datepicker>
+                                    </mat-form-field>
                                 </div>
 
                                 <div class="fv-row mb-7 col col-6">
                                     <label class="fw-semibold fs-6 mb-2">{{ 'DOTTUYENSINH.ngaynhaphocDK' | translate
                                         }}</label>
-                                    <input type="date" class="form-control form-control-solid"
-                                        formControlName="NgayNhapHocDK" />
+
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>Chọn ngày</mat-label>
+                                        <input class="form-control form-control-solid" matInput
+                                            [matDatepicker]="NgayNhapHocDK" formControlName="NgayNhapHocDK">
+                                        <mat-datepicker-toggle matSuffix [for]="NgayNhapHocDK"></mat-datepicker-toggle>
+                                        <mat-datepicker #NgayNhapHocDK></mat-datepicker>
+                                    </mat-form-field>
                                 </div>
                             </div>
+                            <!-- Hết thử ngày -->
+
+
 
                             <div class="row">
                                 <div class="fv-row mb-7 col col-6 ">
@@ -158,10 +201,9 @@
                 <!--begin::Button-->
                 <button type="submit" id="kt_modal_update_customer_submit" class="btn jee_btn-addcontinue"
                     (click)="onSubmit(false)" *ngIf="!viewLoading" [disabled]="disabledBtn">
-                    <span
-                        class="svg-icon svg-icon-primary svg-icon-2x"><svg
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
-                            height="24px" viewBox="0 0 24 24" version="1.1">
+                    <span class="svg-icon svg-icon-primary svg-icon-2x"><svg xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24"
+                            version="1.1">
                             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                 <rect x="0" y="0" width="24" height="24" />
                                 <path

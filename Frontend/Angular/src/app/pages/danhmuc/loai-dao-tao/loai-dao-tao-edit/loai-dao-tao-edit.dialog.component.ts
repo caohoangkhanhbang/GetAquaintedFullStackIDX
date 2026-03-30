@@ -101,7 +101,7 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
 
         return this.translate.instant('COMMON.capnhat');
     }
-    
+
     prepareData(): LoaiDaoTaoModel {
         const controls = this.itemForm.controls;
         const _item = new LoaiDaoTaoModel();
@@ -237,23 +237,13 @@ export class LoaiDaoTaoEditDialogComponent implements OnInit {
         // 3. Nếu KHÔNG PHẢI số HOẶC (LÀ số nhưng đã đủ 10 ký tự) -> CHẶN
         if (!isNumber || (isNumber && Number(inputValue.value) > maxSoThuTu)) {
             //Hiển thị thông báo nếu nhập quá 10 chữ số
-            this.Notification();
+            this.NotificationCustom("Số thứ tự không được vượt quá 2,147,483,647");
             // Chỉ chặn nếu không phải là đang bôi đen để ghi đè
             if (inputValue.selectionStart === inputValue.selectionEnd) {
                 e.preventDefault();
             }
         }
 
-    }
-
-    Notification() {
-        Swal.fire({
-            title: "Thông báo!",
-            text: "Số thứ tự không được vượt quá 2,147,483,647",
-            icon: "warning",
-            confirmButtonText: "Đồng ý",
-            confirmButtonColor: "rgb(0, 255, 8)",
-        })
     }
 
     NotificationCustom(text: string) {
