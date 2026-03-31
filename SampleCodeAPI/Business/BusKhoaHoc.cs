@@ -2,11 +2,10 @@
 using SampleCodeAPI.Model;
 using System.Collections;
 using System.Data;
-using System.Data.SqlClient;
 
 namespace SampleCodeAPI.Business
 {
-    public class BusQLNamHoc
+    public class BusKhoaHoc
     {
         public static async Task<object> GetList(QueryParams query, string connect)
         {
@@ -14,13 +13,12 @@ namespace SampleCodeAPI.Business
             PageModel pageModel = new PageModel();
             using (DpsConnection cnn = new DpsConnection(connect))
             {
-
                 SqlConditions Conds = new SqlConditions();
-                string sqlq = "", orderByStr = " NamHoc ", whereStr = " Disable = 0 ";
+                string sqlq = "", orderByStr = " TenKhoaHoc ", whereStr = " Disable = 0 ";
                 Dictionary<string, string> sortableFields = new Dictionary<string, string>
                 {
+                    { "TenKhoaHoc", "TenKhoaHoc"},
                     { "NamHoc", "NamHoc"},
-                    { "NienHoc", "NienHoc"},
                 };
 
                 if (!string.IsNullOrEmpty(query.sortField) && sortableFields.ContainsKey(query.sortField))
@@ -29,10 +27,10 @@ namespace SampleCodeAPI.Business
                 }
                 if (!string.IsNullOrEmpty(query.filter["keyword"]))
                 {
-                    whereStr += " and (NamHoc like @kw or NienHoc like @kw)";
+                    whereStr += " and (TenKhoaHoc like @kw or NamHoc like @kw)";
                     Conds.Add("kw", "%" + query.filter["keyword"] + "%");
                 }
-                sqlq = $@"select count(*) AS tong from (select * from DanhSachNamHoc
+                sqlq = $@"select count(*) AS tong from (select * from DanhSachKhoaHoc
                                   where {whereStr} ) as a";
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
                 var total = int.Parse(dt.Rows[0]["tong"].ToString());
@@ -64,13 +62,13 @@ namespace SampleCodeAPI.Business
 
                     if (query.page > 1)
                     {
-                        sqlq = $@"  select DanhSachNamHoc.* from DanhSachNamHoc
+                        sqlq = $@"  select DanhSachKhoaHoc.* from DanhSachKhoaHoc
                                   where {whereStr} order by {orderByStr} 
                                   OFFSET @firstRecord ROWS FETCH NEXT @record ROWS ONLY";
                     }
                     else if (query.page == 1)
                     {
-                        sqlq = $@"  select top(@record) DanhSachNamHoc.* from DanhSachNamHoc
+                        sqlq = $@"  select top(@record) DanhSachKhoaHoc.* from DanhSachKhoaHoc
                                   where {whereStr} order by {orderByStr} ";
 
                     }
@@ -84,12 +82,12 @@ namespace SampleCodeAPI.Business
                             select new
                             {
                                 id = r["id"] != DBNull.Value ? int.Parse(r["id"].ToString()) : (int?)null,
+                                TenKhoaHoc = !String.IsNullOrEmpty(r["TenKhoaHoc"].ToString())? r["TenKhoaHoc"].ToString():"",
                                 NamHoc = r["NamHoc"] != DBNull.Value ? int.Parse(r["NamHoc"].ToString()) : (int?)null,
-                                NienHoc = !String.IsNullOrEmpty(r["NienHoc"].ToString()) ? r["NienHoc"].ToString() : "",
-                                Disable = r["Disable"] != DBNull.Value ? Boolean.Parse(r["Disable"].ToString()):false,
-                                CreatedBy = !String.IsNullOrEmpty(r["CreatedBy"].ToString()) ? r["CreatedBy"].ToString() : "",
-                                CreatedDate = r["CreatedDate"] != DBNull.Value ? DateTime.Parse(r["CreatedDate"].ToString()) : (DateTime?)null,
-
+                                CachViet = !String.IsNullOrEmpty(r["CachViet"].ToString())? r["CachViet"].ToString(): "",
+                                Disable = r["Disable"] != DBNull.Value ? Boolean.Parse(r["Disable"].ToString()): (bool?)null,
+                                CreatedBy = r["CreatedBy"] != DBNull.Value ? r["CreatedBy"].ToString() : "",
+                                CreatedDate = r["CreatedDate"] != DBNull.Value ? DateTime.Parse(r["CreatedDate"].ToString()) : (DateTime?)null,                              
                             }).ToList();
 
                 model.data = data;
@@ -98,7 +96,6 @@ namespace SampleCodeAPI.Business
                 return model;
             }
         }
-
         public static async Task<BaseModel<object>> GetDetail(long id, string connect)
         {
             BaseModel<object> model = new BaseModel<object>();
@@ -108,7 +105,7 @@ namespace SampleCodeAPI.Business
             {
                 SqlConditions Conds = new SqlConditions();
                 string sqlq = "";
-                sqlq = $@" select * from DanhSachNamHoc
+                sqlq = $@" select * from DanhSachKhoaHoc
                                   where id=@id ";
                 Conds.Add("id", id);
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
@@ -138,12 +135,12 @@ namespace SampleCodeAPI.Business
                             select new
                             {
                                 id = r["id"] != DBNull.Value ? int.Parse(r["id"].ToString()) : (int?)null,
+                                TenKhoaHoc = !String.IsNullOrEmpty(r["TenKhoaHoc"].ToString()) ? r["TenKhoaHoc"].ToString() : "",
                                 NamHoc = r["NamHoc"] != DBNull.Value ? int.Parse(r["NamHoc"].ToString()) : (int?)null,
-                                NienHoc = !String.IsNullOrEmpty(r["NienHoc"].ToString()) ? r["NienHoc"].ToString() : "",
-                                Disable = r["Disable"] != DBNull.Value ? Boolean.Parse(r["Disable"].ToString()) : false,
-                                CreatedBy = !String.IsNullOrEmpty(r["CreatedBy"].ToString()) ? r["CreatedBy"].ToString() : "",
+                                CachViet = !String.IsNullOrEmpty(r["CachViet"].ToString()) ? r["CachViet"].ToString() : "",
+                                Disable = r["Disable"] != DBNull.Value ? Boolean.Parse(r["Disable"].ToString()) : (bool?)null,
+                                CreatedBy = r["CreatedBy"] != DBNull.Value ? r["CreatedBy"].ToString() : "",
                                 CreatedDate = r["CreatedDate"] != DBNull.Value ? DateTime.Parse(r["CreatedDate"].ToString()) : (DateTime?)null,
-
                             }).FirstOrDefault();
 
                 model.data = data;
@@ -151,7 +148,7 @@ namespace SampleCodeAPI.Business
                 return model;
             }
         }
-        public static async Task<BaseModel<object>> Insert(NamHocModel data, string connect, UserJWT loginData)
+        public static async Task<BaseModel<object>> Insert(KhoaHocModel data, string connect, UserJWT loginData)
         {
             ErrorModel error = new ErrorModel();
             BaseModel<object> model = new BaseModel<object>();
@@ -168,25 +165,26 @@ namespace SampleCodeAPI.Business
                 return model;
             }
 
-            if (!CheckTrungTen(connect, data.NamHoc.ToString()))
+            if (!CheckTrungTen(connect, data.TenKhoaHoc.ToString()))
             {
                 model.status = 0;
                 model.error = new ErrorModel
                 {
-                    message = "Năm học không được trùng"
+                    message = "Tên khóa học không được trùng"
                 };
                 return model;
             }
 
             using (DpsConnection cnn = new DpsConnection(connect))
             {
+                val.Add("TenKhoaHoc", data.TenKhoaHoc);
                 val.Add("NamHoc", data.NamHoc);
-                val.Add("NienHoc", data.NienHoc);
+                val.Add("CachViet", (object)data.CachViet ?? DBNull.Value);
                 val.Add("Disable", (object)data.Disable ?? DBNull.Value);
-                val.Add("CreatedBy", loginData.UserName);
+                val.Add("CreatedBy",  loginData.UserName);
                 val.Add("CreatedDate", DateTime.UtcNow);
 
-                if (cnn.Insert(val, "DanhSachNamHoc") == 1)
+                if (cnn.Insert(val, "DanhSachKhoaHoc") == 1)
                 {
                     model.status = 1;
                     model.error = new ErrorModel
@@ -208,7 +206,7 @@ namespace SampleCodeAPI.Business
             //Bổ sung ghi log
             return model;
         }
-        public static async Task<BaseModel<object>> Update(NamHocModel data, string connect, UserJWT loginData)
+        public static async Task<BaseModel<object>> Update(KhoaHocModel data, string connect, UserJWT loginData)
         {
             BaseModel<object> model = new BaseModel<object>();
             BaseModel<string> result_up = new BaseModel<string>();
@@ -230,19 +228,20 @@ namespace SampleCodeAPI.Business
                 model.status = 0;
                 model.error = new ErrorModel
                 {
-                    message = "Năm học không được trùng"
+                    message = "Mã loại đào tạo không được trùng"
                 };
                 return model;
             }
             using (DpsConnection cnn = new DpsConnection(connect))
             {
+                val.Add("TenKhoaHoc", data.TenKhoaHoc);
                 val.Add("NamHoc", data.NamHoc);
-                val.Add("NienHoc", data.NienHoc);
+                val.Add("CachViet", (object)data.CachViet ?? DBNull.Value);
                 val.Add("Disable", (object)data.Disable ?? DBNull.Value);
                 val.Add("UpdatedDate", DateTime.UtcNow);
-                val.Add("UpdatedBy", loginData.UserName);
+                val.Add("UpdatedBy",  loginData.UserName);
 
-                if (cnn.Update(val, new SqlConditions { { "id", data.id } }, "DanhSachNamHoc") == 1)
+                if (cnn.Update(val, new SqlConditions { { "id", data.id } }, "DanhSachKhoaHoc") == 1)
                 {
                     model.status = 1;
                     model.error = new ErrorModel
@@ -272,9 +271,9 @@ namespace SampleCodeAPI.Business
                 Hashtable val = new Hashtable();
                 val.Add("Disable", 1);
                 val.Add("DeletedDate", DateTime.UtcNow);
-                val.Add("DeletedBy", loginData.UserName);
+                val.Add("DeletedBy",  loginData.UserName);
 
-                if (cnn.Update(val, new SqlConditions { { "id", id } }, "DanhSachNamHoc") == 1)
+                if (cnn.Update(val, new SqlConditions { { "id", id } }, "DanhSachKhoaHoc") == 1)
                 {
                     model.status = 1;
                     model.error = new ErrorModel
@@ -302,7 +301,7 @@ namespace SampleCodeAPI.Business
             using (DpsConnection cnn = new DpsConnection(_ConnectionString))
             {
                 SqlConditions conds = new SqlConditions();
-                string sql = "select * from DanhSachNamHoc where NamHoc = @Code  and Disable =0";
+                string sql = "select * from DanhSachKhoaHoc where TenKhoaHoc = @Code  and Disable=0";
                 conds.Add("Code", name);
 
 
@@ -329,6 +328,5 @@ namespace SampleCodeAPI.Business
                 return false;
             }
         }
-
     }
 }

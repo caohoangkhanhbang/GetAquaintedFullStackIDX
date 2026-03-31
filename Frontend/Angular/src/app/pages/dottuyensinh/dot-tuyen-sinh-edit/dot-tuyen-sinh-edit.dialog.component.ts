@@ -23,12 +23,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import moment from 'moment'; // Đảm bảo đã import moment ở đầu file
 
-// //Mới thêm
-// // import { MatDatepickerModule } from '@angular/material/datepicker';
-// import { MatInputModule } from '@angular/material/input';
-// // import { MatFormFieldModule } from '@angular/material/form-field';
-// import { provideNativeDateAdapter } from '@angular/material/core'; // Adapter mặc định
-
 //thêm
 export const MY_FORMATS = {
     parse: {

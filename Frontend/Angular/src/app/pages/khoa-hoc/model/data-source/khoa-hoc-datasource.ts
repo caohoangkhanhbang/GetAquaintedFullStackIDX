@@ -1,11 +1,13 @@
-import { BaseDataSource } from "src/app/_metronic/core/models/data-sources/_base.datasource";
-import { NamHocService } from "../../services/nam-hoc-service";
-import { QueryParamsModel } from "src/app/_metronic/core/models/query-models/query-params.model";
-import { QueryResultsModel } from "src/app/_metronic/core/models/query-models/query-results.model";
-import { finalize, tap, catchError, of } from "rxjs";
+import { of } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
+import { BaseDataSource } from 'src/app/_metronic/core/models/data-sources/_base.datasource';
+import { KhoaHocService } from '../../services/khoa-hoc-service';
+import { inject } from '@angular/core';
+import { QueryParamsModel } from 'src/app/_metronic/core/models/query-models/query-params.model';
+import { QueryResultsModel } from 'src/app/_metronic/core/models/query-models/query-results.model';
 
-export class NamHocDataSource extends BaseDataSource {
-    constructor(private apiService: NamHocService) {
+export class KhoaHocDataSource extends BaseDataSource {
+    constructor(private apiService: KhoaHocService) {
         super();
     }
 
@@ -29,5 +31,3 @@ export class NamHocDataSource extends BaseDataSource {
             });
     }
 }
-
-

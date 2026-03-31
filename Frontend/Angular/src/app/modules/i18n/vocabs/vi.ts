@@ -87,6 +87,23 @@ export const locale = {
       hienthi: 'Hiển thị',
       khongchon: 'Không chọn',
       kichhoat: 'Kích hoạt'
+    },
+    NAMHOC: {
+      stt: "STT",
+      namhoc: "Năm học",
+      nienhoc: "Niên học",
+      hienthi: "Hiển thị",
+      nguoitao: "Người tạo",
+      ngaytao: "Ngày tạo"
+    },
+    KHOAHOC: {
+      stt: "STT",
+      tenkhoahoc: "Tên khóa học",
+      namhoc: "Năm học",
+      hienthi: "Hiển thị",
+      cachviet: "Cách viết",
+      nguoitao: "Người tạo",
+      ngaytao: "Ngày tạo"
     }
   },
 };

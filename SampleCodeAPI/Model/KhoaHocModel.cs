@@ -1,10 +1,11 @@
 ﻿namespace SampleCodeAPI.Model
 {
-    public class NamHocModel
+    public class KhoaHocModel
     {
         public int? id { get; set; }
+        public String TenKhoaHoc { get; set; }
         public int NamHoc { get; set; }
-        public string NienHoc { get; set; }
+        public string? CachViet { get; set; }
         public bool? Disable { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }

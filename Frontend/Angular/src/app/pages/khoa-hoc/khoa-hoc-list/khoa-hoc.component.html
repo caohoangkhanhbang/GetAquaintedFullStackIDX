@@ -35,48 +35,57 @@
                 matSortDirection="asc" matSortDisableClear>
                 <ng-container matColumnDef="STT">
                     <th mat-header-cell *matHeaderCellDef style="flex: 0 0 20%">
-                        {{ 'NAMHOC.stt' | translate }}
+                        {{ 'KHOAHOC.stt' | translate }}
                     </th>
                     <td mat-cell *matCellDef="let r; let i = index">
                         <span>{{ pageSize*paginator.pageIndex+i+1}}</span>
                     </td>
                 </ng-container>
 
-                <ng-container matColumnDef="NamHoc">
+                <ng-container matColumnDef="TenKhoaHoc">
                     <th mat-header-cell *matHeaderCellDef style="flex: 0 0 20%">
-                        {{ 'NAMHOC.namhoc' | translate }}
+                        {{ 'KHOAHOC.tenkhoahoc' | translate }}
                     </th>
-                    <td mat-cell *matCellDef="let item" style="flex: 0 0 20%">{{item.NamHoc}}</td>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 20%">{{item.TenKhoaHoc}}</td>
                 </ng-container>
 
-                <ng-container matColumnDef="NienHoc">
+                <ng-container matColumnDef="NamHoc">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header style="flex: 0 0 30%">
-                        {{ 'NAMHOC.nienhoc' | translate }}
+                        {{ 'KHOAHOC.namhoc' | translate }}
                     </th>
-                    <td mat-cell *matCellDef="let item" style="flex: 0 0 30%">{{item.NienHoc}}</td>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 30%">{{item.NamHoc}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="HienThi">
                     <th mat-header-cell *matHeaderCellDef style="flex: 0 0 15%">
-                        {{ 'NAMHOC.hienthi' | translate }}
+                        {{ 'KHOAHOC.hienthi' | translate }}
                     </th>
                     <td mat-cell *matCellDef="let item" style="flex: 0 0 15%">{{item.HienThi}}</td>
                 </ng-container>
 
-                <ng-container matColumnDef="NguoiTao">
+                <ng-container matColumnDef="CachViet">
                     <th mat-header-cell *matHeaderCellDef style="flex: 0 0 20%">
-                        {{ 'NAMHOC.nguoitao' | translate }}
+                        {{ 'KHOAHOC.cachviet' | translate }}
                     </th>
-                    <td mat-cell *matCellDef="let item" style="flex: 0 0 20%">{{item.CreatedBy}}</td>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 20%">{{item.CachViet}}</td>
                 </ng-container>
 
-                <ng-container matColumnDef="NgayTao">
+                <ng-container matColumnDef="CreatedBy">
                     <th mat-header-cell *matHeaderCellDef style="flex: 0 0 25%">
-                        {{ 'NAMHOC.ngaytao' | translate }}
+                        {{ 'KHOAHOC.nguoitao' | translate }}
                     </th>
-                    <td mat-cell *matCellDef="let item" style="flex: 0 0 25%">{{item.CreatedDate | date: 'dd/MM/yyyy'}}</td>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 25%">{{item.CreatedBy}}</td>
                 </ng-container>
-                
+
+
+                <ng-container matColumnDef="CreatedDate">
+                    <th mat-header-cell *matHeaderCellDef style="flex: 0 0 25%">
+                        {{ 'KHOAHOC.ngaytao' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 25%">{{item.CreatedDate | date: 'dd/MM/yyyy'}}
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="actions">
                     <th mat-header-cell *matHeaderCellDef style="justify-content: center;">
                         <span translate="COMMON.tacvu"></span>

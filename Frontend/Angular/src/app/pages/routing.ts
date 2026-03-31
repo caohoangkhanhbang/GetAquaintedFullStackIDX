@@ -63,9 +63,17 @@ const Routing: Routes = [
     path: 'loaidaotao',
     loadComponent: () => import('./danhmuc/loai-dao-tao/loai-dao-tao-list/loai-dao-tao.component').then(mod => mod.LoaiDaoTaoTableListComponent)
   },
-    {
+  {
     path: 'dot-tuyen-sinh',
     loadComponent: () => import('./dottuyensinh/dot-tuyen-sinh-list/dot-tuyen-sinh-list.component').then(mod => mod.DotTuyenSinhTableListComponent)
+  },
+  {
+    path: 'qlnamhoc',
+    loadComponent: () => import('./namhoc/nam-hoc-list/nam-hoc-list.component').then(mode => mode.NamHocTableListComponent)
+  },
+  {
+    path: 'khoahoc',
+    loadComponent: () => import('./khoa-hoc/khoa-hoc-list/khoa-hoc.component').then(mode => mode.KhoaHocTableListComponent)
   },
   {
     path: '',

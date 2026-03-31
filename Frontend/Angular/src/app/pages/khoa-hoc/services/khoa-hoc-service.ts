@@ -5,16 +5,16 @@ import { environment } from 'src/environments/environment';
 import { HttpUtilsService } from 'src/app/_metronic/core/utils/http-utils.service';
 import { QueryParamsModel } from 'src/app/_metronic/core/models/query-models/query-params.model';
 import { QueryResultsModel } from 'src/app/_metronic/core/models/query-models/query-results.model';
-import { LoaiDaoTaoModel } from '../model/loai-dao-tao.model';
+import { KhoaHocModel } from '../model/khoa-hoc.model'; 
 
 
-const API_ROOT_URL = environment.HOST_TUTORIAL_API + '/api/loaidaotao';
+const API_ROOT_URL = environment.HOST_TUTORIAL_API + '/api/khoahoc';
 const API_URL = environment.HOST_JEEHR_API + '/' + environment.apiUrl;
 @Injectable({
     providedIn: 'root'
 })
 
-export class LoaiDaoTaoService {
+export class KhoaHocService {
     constructor(private http: HttpClient,
         private httpUtils: HttpUtilsService,
     ) { }
@@ -60,12 +60,12 @@ export class LoaiDaoTaoService {
         return this.http.get<any>(url, { headers: httpHeaders });
     }
 
-    create(item: LoaiDaoTaoModel): Observable<any> {
+    create(item: KhoaHocModel): Observable<any> {
         const httpHeaders = this.httpUtils.getHTTPHeaders();
         return this.http.post<any>(API_ROOT_URL + '/insert', item, { headers: httpHeaders });
     }
 
-    update(item: LoaiDaoTaoModel): Observable<any> {
+    update(item: KhoaHocModel): Observable<any> {
         const httpHeaders = this.httpUtils.getHTTPHeaders();
         return this.http.post<any>(API_ROOT_URL + '/update', item, { headers: httpHeaders });
     }

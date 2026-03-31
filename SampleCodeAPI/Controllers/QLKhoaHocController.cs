@@ -1,23 +1,18 @@
 ﻿using API_JeeSale.Services;
 using DPSinfra.ConnectionCache;
 using DPSinfra.Kafka;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SampleCodeAPI.Business;
 using SampleCodeAPI.Classes;
 using SampleCodeAPI.Model;
 using SampleCodeAPI.Services;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace SampleCodeAPI.Controllers
 {
-    [EnableCors("AllowOrigin")]
-    [Route("api/qlnamhoc")]
+    [Route("api/khoahoc")]
     [ApiController]
-    [ApiVersion("1.0")]
-    public class QLNamHocController(IConfiguration configuration, IConnectionCache connectionCache, ILogger<SampleController> logger, IProducer producer, INotifyService notifyService, IBoxEvent boxEvent, MinioObject minioClient, IConnectionService connectionService) : ControllerBase
+    public class QLKhoaHocController(IConfiguration configuration, IConnectionCache connectionCache, ILogger<SampleController> logger, IProducer producer, INotifyService notifyService, IBoxEvent boxEvent, MinioObject minioClient, IConnectionService connectionService) : ControllerBase
     {
         private IConfiguration _configuration = configuration;
         private IConnectionCache _cache = connectionCache;
@@ -41,12 +36,12 @@ namespace SampleCodeAPI.Controllers
             try
             {
                 string connect = _connection.getConnectionString(loginData.customerID);
-                var result = await BusQLNamHoc.GetList(query, connect);
+                var result = await BusKhoaHoc.GetList(query, connect);
                 return result;
             }
             catch (Exception ex)
             {
-                _logHelper.LogError(loginData.UserName, "QLNamHocController", message, ex);
+                _logHelper.LogError(loginData.UserName, "QLKhoaHocController", message, ex);
                 return JsonResultCommon.Exception(ex);
             }
         }
@@ -55,18 +50,18 @@ namespace SampleCodeAPI.Controllers
         [Route("detail/{Id}")]
         public async Task<object> GetDetail(long Id)
         {
-            UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
+                UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
             if (loginData == null)
                 return JsonResultCommon.DangNhap();
 
             string connect = _connection.getConnectionString(loginData.customerID);
-            var model = await BusQLNamHoc.GetDetail(Id, connect);
+            var model = await BusKhoaHoc.GetDetail(Id, connect);
             return model;
         }
 
         [HttpPost]
         [Route("insert")]
-        public async Task<object> Insert(NamHocModel data)
+        public async Task<object> Insert(KhoaHocModel data)
         {
             UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
             if (loginData == null)
@@ -76,19 +71,19 @@ namespace SampleCodeAPI.Controllers
             try
             {
                 string connect = _connection.getConnectionString(loginData.customerID);
-                var result = await BusQLNamHoc.Insert(data, connect, loginData);
+                var result = await BusKhoaHoc.Insert(data, connect, loginData);
                 return result;
             }
             catch (Exception ex)
             {
-                _logHelper.LogError(loginData.UserName, "QLNamHocController", message, ex);
+                _logHelper.LogError(loginData.UserName, "QLKhoaHocController", message, ex);
                 return JsonResultCommon.Exception(ex);
             }
         }
 
         [HttpPost]
         [Route("update")]
-        public async Task<object> Update(NamHocModel data)
+        public async Task<object> Update(KhoaHocModel data)
         {
             UserJWT loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
             if (loginData == null)
@@ -98,12 +93,12 @@ namespace SampleCodeAPI.Controllers
             try
             {
                 string connect = _connection.getConnectionString(loginData.customerID);
-                var result = await BusQLNamHoc.Update(data, connect, loginData);
+                var result = await BusKhoaHoc.Update(data, connect, loginData);
                 return result;
             }
             catch (Exception ex)
             {
-                _logHelper.LogError(loginData.UserName, "QLNamHocController", message, ex);
+                _logHelper.LogError(loginData.UserName, "QLKhoaHocController", message, ex);
                 return JsonResultCommon.Exception(ex);
             }
         }
@@ -117,8 +112,10 @@ namespace SampleCodeAPI.Controllers
                 return JsonResultCommon.DangNhap();
 
             string connect = _connection.getConnectionString(loginData.customerID);
-            var model = await BusQLNamHoc.Delete(Id, connect, loginData);
+            var model = await BusKhoaHoc.Delete(Id, connect, loginData);
             return model;
         }
     }
 }
+
+

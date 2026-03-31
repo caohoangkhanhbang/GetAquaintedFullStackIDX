@@ -1,12 +1,12 @@
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, fromEvent, merge, tap } from 'rxjs';
-import { DotTuyenSinhService } from '../services/dot-tuyen-sinh.service';
+import { KhoaHocService } from '../services/khoa-hoc-service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { DotTuyenSinhModel } from '../model/dot-tuyen-sinh.model';
+import { KhoaHocModel } from '../model/khoa-hoc.model';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { QueryParamsModel } from 'src/app/_metronic/core/models/query-models/query-params.model';
-import { DotTuyenSinhDataSource } from '../model/data-sources/dot-tuyen-sinh.datasource';
+import { KhoaHocDataSource } from '../model/data-source/khoa-hoc-datasource';
 import { MatPaginator, MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { CommonModule } from '@angular/common';
@@ -17,29 +17,27 @@ import { SharedModule } from 'src/app/_metronic/shared/shared.module';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { TokenStorage } from 'src/app/modules/auth/services/token-storage.service';
 import { MatPaginatorIntlCustom } from 'src/app/modules/auth/services/config-mat-page';
-import { DotTuyenSinhEditDialogComponent } from '../dot-tuyen-sinh-edit/dot-tuyen-sinh-edit.dialog.component';
+import { KhoaHocEditDialogComponent } from '../khoa-hoc-edit/khoa-hoc-edit.dialog.component';
 import { LayoutUtilsService } from 'src/app/_metronic/core/utils/layout-utils.service';
 
-
-
 @Component({
-    selector: 'app-dot-tuyen-sinh-list',
+    selector: 'app-khoa-hoc-list',
     standalone: true,
-    providers: [DotTuyenSinhService, LayoutUtilsService, TokenStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCustom }],
+    providers: [KhoaHocService, LayoutUtilsService, TokenStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCustom }],
     imports: [CommonModule, ReactiveFormsModule, MatPaginatorModule, MatSortModule, MatIconModule, TranslateModule, MatTooltipModule, MatTableModule, SharedModule],
-    templateUrl: './dot-tuyen-sinh-list.component.html',
+    templateUrl: './khoa-hoc.component.html',
 })
-export class DotTuyenSinhTableListComponent implements OnInit, OnDestroy {
-    private DotTuyenSinhService = inject(DotTuyenSinhService);
+export class KhoaHocTableListComponent implements OnInit, OnDestroy {
+    private KhoaHocService = inject(KhoaHocService);
     private translate = inject(TranslateService);
     public dialog = inject(MatDialog);
     private tokenStorage = inject(TokenStorage);
     private layoutUtilsService = inject(LayoutUtilsService);
 
     itemModel: any;
-    dataSource: DotTuyenSinhDataSource;
+    dataSource: KhoaHocDataSource;
     dataResult: any[] = [];
-    displayedColumns = ['STT', 'NamHoc', 'Dot', 'TenDotTS', 'KhoaHoc', 'ThoiGianNhanHS', 'NgayInGBTT', 'ThoiGianLayHS', 'NgayNhapHocDK', 'GhiChu', 'CreatedBy', 'CreatedDate', 'actions']
+    displayedColumns = ['STT', 'TenKhoaHoc', 'NamHoc', 'HienThi', 'CachViet', 'CreatedBy', 'CreatedDate', 'actions'];
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
     @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
@@ -71,7 +69,7 @@ export class DotTuyenSinhTableListComponent implements OnInit, OnDestroy {
             )
             .subscribe();
 
-        this.dataSource = new DotTuyenSinhDataSource(this.DotTuyenSinhService);
+        this.dataSource = new KhoaHocDataSource(this.KhoaHocService);
         this.dataSource.entitySubject.subscribe(res => this.dataResult = res);
         this.loadDataList();
     }
@@ -79,7 +77,7 @@ export class DotTuyenSinhTableListComponent implements OnInit, OnDestroy {
     loadDataList() {
 
         const queryParams = new QueryParamsModel(
-            this.filterConfiguration(),
+            this.filterConfiguration(), //Trả về từ khóa cần lọc ở đây
             this.sort.direction,
             this.sort.active,
             this.paginator.pageIndex,
@@ -98,10 +96,7 @@ export class DotTuyenSinhTableListComponent implements OnInit, OnDestroy {
 
     loadPage() {
         var arrayData: any[] = [];
-        if (this.paginator.pageSize)
-            this.pageSize = this.paginator.pageSize;
         this.dataSource.entitySubject.subscribe(res => arrayData = res);
-
         if (arrayData !== undefined && arrayData?.length == 0) {
             var totalRecord = 0;
             this.dataSource.paginatorTotal$.subscribe(tt => totalRecord = tt)
@@ -111,7 +106,7 @@ export class DotTuyenSinhTableListComponent implements OnInit, OnDestroy {
                     this.sort.direction,
                     this.sort.active,
                     this.paginator.pageIndex = this.paginator.pageIndex - 1,
-                    this.paginator.pageSize,
+                    this.paginator.pageSize
                 );
                 this.dataSource.loadList(queryParams1);
             }
@@ -152,7 +147,7 @@ export class DotTuyenSinhTableListComponent implements OnInit, OnDestroy {
         };
         Swal.fire(successAlert).then((clicked) => {
             if (clicked.isConfirmed) {
-                this.DotTuyenSinhService.delete(item.Id).subscribe((res) => {
+                this.KhoaHocService.delete(item.id).subscribe((res) => {
                     if (res && res.status == 1) {
                         this.loadDataList();
                         this.layoutUtilsService.showSuccess(res.error.message);
@@ -165,9 +160,9 @@ export class DotTuyenSinhTableListComponent implements OnInit, OnDestroy {
     }
 
     edit(id: number) {
-        const item = new DotTuyenSinhModel();
+        const item = new KhoaHocModel();
         item.clear(); // Set all defaults fields
-        item.Id = id;
+        item.id = id;
         this.Update(item);
     }
 
@@ -181,12 +176,12 @@ export class DotTuyenSinhTableListComponent implements OnInit, OnDestroy {
     }
 
     Add() {
-        const item = new DotTuyenSinhModel();
+        const item = new KhoaHocModel();
         item.clear(); // Set all defaults fields
         this.Update(item);
     }
 
-    Update(_item: DotTuyenSinhModel) {
+    Update(_item: KhoaHocModel) {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.width = '600px';
         dialogConfig.height = 'auto';
@@ -194,12 +189,14 @@ export class DotTuyenSinhTableListComponent implements OnInit, OnDestroy {
             item: _item,
             isView: false // Add this flag for edit mode
         };
-        const dialogRef = this.dialog.open(DotTuyenSinhEditDialogComponent, dialogConfig);
+
+        const dialogRef = this.dialog.open(KhoaHocEditDialogComponent, dialogConfig);
         dialogRef.afterClosed().subscribe(result => {
             this.loadDataList();
         });
     }
-    View(_item: DotTuyenSinhModel) {
+
+    View(_item: KhoaHocModel) {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.width = '600px';
         dialogConfig.height = 'auto';
@@ -207,7 +204,8 @@ export class DotTuyenSinhTableListComponent implements OnInit, OnDestroy {
             item: _item,
             isView: true // Add this flag for view mode
         };
-        const dialogRef = this.dialog.open(DotTuyenSinhEditDialogComponent, dialogConfig);
+
+        const dialogRef = this.dialog.open(KhoaHocEditDialogComponent, dialogConfig);
         dialogRef.afterClosed().subscribe(result => {
             this.loadDataList();
         });
@@ -218,3 +216,5 @@ export class DotTuyenSinhTableListComponent implements OnInit, OnDestroy {
         return tmp_height + 'px';
     }
 }
+
+

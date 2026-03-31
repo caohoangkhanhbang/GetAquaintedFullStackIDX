@@ -16,25 +16,36 @@
                 <div class="d-flex flex-column scroll-y me-n7 pe-7 mw-650px">
                     <div class="collapse show">
                         <div class="fv-row mb-7">
-                            <label class="required fw-semibold fs-6 mb-2">{{ 'NAMHOC.namhoc' | translate
+                            <label class="required fw-semibold fs-6 mb-2">{{ 'KHOAHOC.tenkhoahoc' | translate
                                 }}</label>
-                            <input cdkFocusInitial #focusInput type="number"
+                            <input cdkFocusInitial #focusInput type="text"
                                 class="form-control form-control-solid class-batbuoc input-batbuoc"
-                                formControlName="NamHoc" required />
+                                formControlName="TenKhoaHoc" required />
                         </div>
 
                         <div class="fv-row mb-7">
-                            <label class="required fw-semibold fs-6 mb-2">{{ 'NAMHOC.nienhoc' | translate
+                            <label class="required fw-semibold fs-6 mb-2">{{ 'KHOAHOC.namhoc' | translate
                                 }}</label>
-                            <input type="text" class="form-control form-control-solid class-batbuoc input-batbuoc"
-                                formControlName="NienHoc" required />
+                            <mat-select class="form-control form-control-solid class-batbuoc input-batbuoc"
+                                formControlName="NamHoc" required>
+                                <mat-option [value]="0">{{ 'DOTTUYENSINH.khongchon' | translate }}</mat-option>
+                                <mat-option *ngFor="let item of listNamHoc" [value]="item.Id">
+                                    {{ item.NamHoc}}
+                                </mat-option>
+                            </mat-select>
                         </div>
 
                         <div class="fv-row mb-7">
-                            <label class="fw-semibold fs-6 mb-2">{{ 'NAMHOC.hienthi' | translate }}</label>
-                            <input type="checkbox" class="form-control form-control-solid" formControlName="HienThi" />
+                            <label class="fw-semibold fs-6 mb-2">{{ 'KHOAHOC.cachviet' | translate }}</label>
+                            <input type="text" class="form-control form-control-solid" formControlName="CachViet" />
                         </div>
-                        
+
+
+                        <div class="fv-row mb-7">
+                            <label class="fw-semibold fs-6 mb-2">{{ 'KHOAHOC.hienthi' | translate }}</label>
+                            <input type="checkbox" class="form-control form-control-solid" formControlName="Disable" />
+                        </div>
+
                     </div>
                 </div>
             </div>

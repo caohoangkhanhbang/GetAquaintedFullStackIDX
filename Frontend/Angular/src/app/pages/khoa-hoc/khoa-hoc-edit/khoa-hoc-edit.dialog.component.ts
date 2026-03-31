@@ -1,9 +1,9 @@
 import { Component, OnInit, Inject, HostListener, ViewChild, ElementRef, ChangeDetectorRef, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { NamHocService } from '../services/nam-hoc-service';
+import { KhoaHocService } from '../services/khoa-hoc-service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { NamHocModel } from '../model/nam-hoc.model';
+import { KhoaHocModel } from '../model/khoa-hoc.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
@@ -16,25 +16,24 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatSelectModule } from '@angular/material/select';
 import { AnimationDriver } from '@angular/animations/browser';
-import { values } from 'lodash';
 @Component({
-    selector: 'app-nam-hoc-edit-dialog',
+    selector: 'app-khoa-hoc-edit-dialog',
     standalone: true,
-    providers: [NamHocService, LayoutUtilsService,
+    providers: [KhoaHocService, LayoutUtilsService,
         { provide: MAT_DATE_LOCALE, useValue: 'vi' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     ],
     imports: [CommonModule, FormsModule, MatFormFieldModule, MatTooltipModule, TranslateModule, ReactiveFormsModule, MatIconModule, MatDatepickerModule, NgxMatSelectSearchModule, MatSelectModule],
-    templateUrl: './nam-hoc-edit.dialog.component.html',
+    templateUrl: './khoa-hoc-edit.dialog.component.html',
 })
-export class NamHocEditDialogComponent implements OnInit {
+export class KhoaHocEditDialogComponent implements OnInit {
     private translate = inject(TranslateService);
     private changeDetectorRefs = inject(ChangeDetectorRef);
     private fb = inject(FormBuilder);
-    private LoaiDaoTaoService = inject(NamHocService);
+    private KhoaHocService = inject(KhoaHocService);
     private layoutUtilsService = inject(LayoutUtilsService);
 
-    item: NamHocModel;
+    item: KhoaHocModel;
     itemForm: FormGroup;
     hasFormErrors: boolean = false;
     viewLoading: boolean = false;
@@ -42,8 +41,9 @@ export class NamHocEditDialogComponent implements OnInit {
     disabledBtn: boolean = false;
     listHinhThucDaoTao: any[] = [];
     isView: boolean = false;
+    listNamHoc: any[] = [];
 
-    constructor(public dialogRef: MatDialogRef<NamHocEditDialogComponent>,
+    constructor(public dialogRef: MatDialogRef<KhoaHocEditDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
     ) {
         this.isView = data.isView;
@@ -54,7 +54,7 @@ export class NamHocEditDialogComponent implements OnInit {
         this.reset();
         if (this.item.id > 0) {
             this.viewLoading = true;
-            this.LoaiDaoTaoService.getDetail(this.item.id).subscribe((res: any) => {
+            this.KhoaHocService.getDetail(this.item.id).subscribe((res: any) => {
                 this.item = res.data;
                 this.createForm();
                 this.changeDetectorRefs.detectChanges();
@@ -77,8 +77,9 @@ export class NamHocEditDialogComponent implements OnInit {
 
     createForm() {
         this.itemForm = this.fb.group({
+            TenKhoaHoc: [this.item.TenKhoaHoc || '', [Validators.required]],
             NamHoc: [this.item.NamHoc || 0, [Validators.required]],
-            NienHoc: [this.item.NienHoc || '', [Validators.required]],
+            CachViet: [this.item.CachViet || ''],
             Disable: [this.item.Disable || false]
         });
         this.itemForm.markAllAsTouched();
@@ -100,13 +101,15 @@ export class NamHocEditDialogComponent implements OnInit {
         return this.translate.instant('COMMON.capnhat');
     }
 
-    prepareData(): NamHocModel {
+    prepareData(): KhoaHocModel {
         const controls = this.itemForm.controls;
-        const _item = new NamHocModel();
+        const _item = new KhoaHocModel();
         _item.id = this.item.id;
-        _item.NamHoc = controls['NamHoc']?.value;
-        _item.NienHoc = controls['NienHoc']?.value;
-        _item.Disable = controls['Disable']?.value ?? true;
+        _item.TenKhoaHoc = controls['TenKhoaHoc'].value;
+        _item.NamHoc = controls['NamHoc'].value;
+        _item.CachViet = controls['CachViet'].value ?? null;
+        _item.Disable = controls['Disable'].value ?? null;
+
         return _item;
     }
 
@@ -122,16 +125,12 @@ export class NamHocEditDialogComponent implements OnInit {
             return;
         }
         const updatedegree = this.prepareData();
-        const namHoc = this.itemForm.get("NamHoc")?.value;
-        if (namHoc !== null && namHoc !== undefined && namHoc !== '') {
-            if (Number(namHoc) <= 0) {
+        const stt = this.itemForm.get("SoThuTu")?.value;
+        if (stt !== null && stt !== undefined && stt !== '') {
+            if (Number(stt) <= 0) {
                 this.NotificationCustom("Số thứ tự phải lớn hơn không!");
                 return;
             }
-        }
-        if (namHoc > 2147483647) {
-            this.NotificationCustom("Năm học không được vượt quá 2147483647")
-            return;
         }
         if (updatedegree.id > 0) {
             this.Update(updatedegree);
@@ -140,9 +139,9 @@ export class NamHocEditDialogComponent implements OnInit {
         }
     }
 
-    Update(_item: NamHocModel) {
+    Update(_item: KhoaHocModel) {
         this.disabledBtn = true;
-        this.LoaiDaoTaoService.update(_item).subscribe((res: any) => {
+        this.KhoaHocService.update(_item).subscribe((res: any) => {
             this.disabledBtn = false;
             this.changeDetectorRefs.detectChanges();
             if (res && res.status === 1) {
@@ -158,9 +157,9 @@ export class NamHocEditDialogComponent implements OnInit {
         });
     }
 
-    Create(_item: NamHocModel, withBack: boolean) {
+    Create(_item: KhoaHocModel, withBack: boolean) {
         this.disabledBtn = true;
-        this.LoaiDaoTaoService.create(_item).subscribe((res: any) => {
+        this.KhoaHocService.create(_item).subscribe((res: any) => {
             this.disabledBtn = false;
             this.changeDetectorRefs.detectChanges();
             if (res && res.status === 1) {
