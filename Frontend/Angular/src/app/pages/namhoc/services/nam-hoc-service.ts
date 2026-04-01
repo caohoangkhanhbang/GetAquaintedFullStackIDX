@@ -7,7 +7,7 @@ import { NamHocModel } from "../model/nam-hoc.model";
 import { Injectable } from "@angular/core";
 import { Observable, map } from "rxjs";
 
-const API_ROOT_URL = environment.HOST_TUTORIAL_API + 'api/qlnamhoc';
+const API_ROOT_URL = environment.HOST_TUTORIAL_API + '/api/qlnamhoc';
 const API_URL = environment.HOST_JEEACCOUNT_API + '/' + environment.apiUrl;
 @Injectable({
     providedIn: 'root'
@@ -68,7 +68,18 @@ export class NamHocService {
     delete(id: number): Observable<any> {
         const httpHeaders = this.httpUtils.getHTTPHeaders();
         const url = API_ROOT_URL + `/delete/${id}`;
-        console.log('API_ROOT_URL', API_ROOT_URL);
         return this.http.delete<any>(url, { headers: httpHeaders });
     }
+
+    exportExcel(queryParams: QueryParamsModel): Observable<Blob> {
+        const httpHeaders = this.httpUtils.getHTTPHeaders();
+        const httpParams = this.httpUtils.getFindHTTPParams(queryParams);
+        const url = API_ROOT_URL + '/export-excel';
+        return this.http.get<Blob>(url, {
+            headers: httpHeaders,
+            params: httpParams,
+            responseType: 'blob' as 'json'
+        });
+    }
+
 }

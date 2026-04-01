@@ -16,6 +16,7 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatSelectModule } from '@angular/material/select';
 import { AnimationDriver } from '@angular/animations/browser';
+
 @Component({
     selector: 'app-khoa-hoc-edit-dialog',
     standalone: true,
@@ -42,6 +43,7 @@ export class KhoaHocEditDialogComponent implements OnInit {
     listHinhThucDaoTao: any[] = [];
     isView: boolean = false;
     listNamHoc: any[] = [];
+
 
     constructor(public dialogRef: MatDialogRef<KhoaHocEditDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
@@ -76,6 +78,7 @@ export class KhoaHocEditDialogComponent implements OnInit {
     }
 
     createForm() {
+        this.getListNamHoc()
         this.itemForm = this.fb.group({
             TenKhoaHoc: [this.item.TenKhoaHoc || '', [Validators.required]],
             NamHoc: [this.item.NamHoc || 0, [Validators.required]],
@@ -128,7 +131,7 @@ export class KhoaHocEditDialogComponent implements OnInit {
         const stt = this.itemForm.get("SoThuTu")?.value;
         if (stt !== null && stt !== undefined && stt !== '') {
             if (Number(stt) <= 0) {
-                this.NotificationCustom("Số thứ tự phải lớn hơn không!");
+                this.NotificationCustom("Năm học phải lớn hơn không!");
                 return;
             }
         }
@@ -246,6 +249,16 @@ export class KhoaHocEditDialogComponent implements OnInit {
             icon: "info",
             confirmButtonText: "Đồng ý",
             confirmButtonColor: "rgb(255, 0, 68)"
+        })
+    }
+
+    getListNamHoc() {
+        this.KhoaHocService.getListNamHoc().subscribe(res => {
+            if (res || res === 1) {
+                this.listNamHoc = res.data;
+            }
+            else
+                this.listNamHoc = [];
         })
     }
 

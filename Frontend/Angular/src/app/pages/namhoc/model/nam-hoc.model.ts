@@ -13,6 +13,6 @@ export class NamHocModel extends BaseModel {
         this.NamHoc = 0;
         this.NienHoc = '';
         this.CreatedBy = '';
-        this.Disable = false;
+        this.Disable = true;
     }
 }

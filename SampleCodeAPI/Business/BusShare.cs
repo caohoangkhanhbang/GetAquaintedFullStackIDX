@@ -17,7 +17,7 @@ namespace SampleCodeAPI.Business
 
                 SqlConditions Conds = new SqlConditions();
                 string sqlq = "";
-                sqlq = $@"select * from DanhSachNamHoc where IsDel = 0";
+                sqlq = $@"select * from DanhSachNamHoc where isDel = 0";
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
                 if (cnn.LastError != null || dt == null)
                 {

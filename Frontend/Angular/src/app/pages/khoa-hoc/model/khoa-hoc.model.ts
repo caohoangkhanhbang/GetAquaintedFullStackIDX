@@ -8,14 +8,16 @@ export class KhoaHocModel extends BaseModel {
     Disable: boolean;
     CreatedBy: string;
     CreatedDate: Date | string;
+    TenNamHoc: string;
 
     clear() {
         this.id = 0;
         this.TenKhoaHoc = '';
         this.NamHoc = 0;
         this.CachViet = "";
-        this.Disable = false;
+        this.Disable = true;
         this.CreatedBy = "";
         this.CreatedDate = new Date();
+        this.TenNamHoc = "";
     }
 }

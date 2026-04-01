@@ -1,9 +1,12 @@
-﻿namespace SampleCodeAPI.Model
+﻿using System.Text.Json.Serialization;
+
+namespace SampleCodeAPI.Model
 {
     public class KhoaHocModel
     {
         public int? id { get; set; }
         public String TenKhoaHoc { get; set; }
+        public String? TenNamHoc { get; set; }
         public int NamHoc { get; set; }
         public string? CachViet { get; set; }
         public bool? Disable { get; set; }

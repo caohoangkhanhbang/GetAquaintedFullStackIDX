@@ -120,5 +120,30 @@ namespace SampleCodeAPI.Controllers
             var model = await BusQLNamHoc.Delete(Id, connect, loginData);
             return model;
         }
+
+        //Hàm xuất excel
+        [HttpGet]
+        [Route("export-excel")]
+        public async Task<IActionResult> ExportExcel([FromQuery] QueryParams query)
+        {
+            var loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
+            if (loginData == null)
+                return Unauthorized(JsonResultCommon.DangNhap());
+
+            const string message = "Xuất danh sách điểm quá trình ra Excel";
+            try
+            {
+                string connect = _connection.getConnectionString(loginData.customerID);
+                byte[] fileBytes = await BusQLNamHoc.ExportToExcel(loginData, query, connect);
+                return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    $"Danh_Sach_Nam_Hoc_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+            }
+            catch (Exception ex)
+            {
+                _logHelper.LogError(loginData.UserName, "QLDiemQuatrinh_ExportExcel", message, ex);
+                return BadRequest(JsonResultCommon.Exception(ex));
+            }
+        }
+
     }
 }

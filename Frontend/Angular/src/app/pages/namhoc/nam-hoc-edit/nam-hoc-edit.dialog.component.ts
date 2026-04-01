@@ -106,7 +106,7 @@ export class NamHocEditDialogComponent implements OnInit {
         _item.id = this.item.id;
         _item.NamHoc = controls['NamHoc']?.value;
         _item.NienHoc = controls['NienHoc']?.value;
-        _item.Disable = controls['Disable']?.value ?? true;
+        _item.Disable = controls['Disable']?.value ?? false;
         return _item;
     }
 

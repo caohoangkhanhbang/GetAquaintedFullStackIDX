@@ -20,6 +20,7 @@ import { MatPaginatorIntlCustom } from 'src/app/modules/auth/services/config-mat
 import { LayoutUtilsService } from 'src/app/_metronic/core/utils/layout-utils.service';
 import { OnInit } from "@angular/core";
 import Swal, { SweetAlertOptions } from 'sweetalert2';
+import { finalize } from "rxjs";
 
 
 
@@ -27,7 +28,7 @@ import Swal, { SweetAlertOptions } from 'sweetalert2';
     selector: 'app-nam-hoc-list',
     standalone: true,
     providers: [NamHocService, LayoutUtilsService, TokenStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCustom }],
-        imports: [CommonModule, ReactiveFormsModule, MatPaginatorModule, MatSortModule, MatIconModule, TranslateModule, MatTooltipModule, MatTableModule, SharedModule],
+    imports: [CommonModule, ReactiveFormsModule, MatPaginatorModule, MatSortModule, MatIconModule, TranslateModule, MatTooltipModule, MatTableModule, SharedModule],
     templateUrl: './nam-hoc-list.component.html'
 })
 
@@ -42,7 +43,8 @@ export class NamHocTableListComponent implements OnInit {
     dataSource: NamHocDataSource;
     dataResult: any[] = [];
     itemModel: any;
-    displayedColumns = ['STT', 'NamHoc', 'NienHoc', 'HienThi', 'NguoiTao', 'NgayTao'];
+    displayedColumns = ['STT', 'NamHoc', 'NienHoc', 'HienThi', 'NguoiTao', 'NgayTao', 'actions'];
+    filter: any = {};
 
     @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -190,31 +192,79 @@ export class NamHocTableListComponent implements OnInit {
     }
 
     Delete(item: any) {
-            const successAlert: SweetAlertOptions = {
-                icon: 'warning',
-                title: 'Bạn có chắc muốn xóa dữ liệu này không?',
-                text: "Dữ liệu không thể hoàn tác sau khi bị xóa",
-                showCancelButton: true,
-                focusCancel: true,
-                cancelButtonText: "Không",
-                confirmButtonText: 'Có',
-                customClass: {
-                    confirmButton: 'btn swl-confirm-btn',
-                    cancelButton: 'btn btn-active-light'
-                }
-            };
-            Swal.fire(successAlert).then((clicked) => {
-                if (clicked.isConfirmed) {
-                    this.NamHocService.delete(item.id).subscribe((res) => {
-                        if (res && res.status == 1) {
-                            this.loadDataList();
-                            this.layoutUtilsService.showSuccess(res.error.message);
-                        } else {
-                            this.layoutUtilsService.showError(res.error.message);
-                        }
+        const successAlert: SweetAlertOptions = {
+            icon: 'warning',
+            title: 'Bạn có chắc muốn xóa dữ liệu này không?',
+            text: "Dữ liệu không thể hoàn tác sau khi bị xóa",
+            showCancelButton: true,
+            focusCancel: true,
+            cancelButtonText: "Không",
+            confirmButtonText: 'Có',
+            customClass: {
+                confirmButton: 'btn swl-confirm-btn',
+                cancelButton: 'btn btn-active-light'
+            }
+        };
+        Swal.fire(successAlert).then((clicked) => {
+            if (clicked.isConfirmed) {
+                this.NamHocService.delete(item.id).subscribe((res) => {
+                    if (res && res.status == 1) {
+                        this.loadDataList();
+                        this.layoutUtilsService.showSuccess(res.error.message);
+                    } else {
+                        this.layoutUtilsService.showError(res.error.message);
+                    }
+                });
+            }
+        });
+    }
+
+    exportExcel() {
+
+        // Tạo queryParams với filter hiện tại
+        const queryParams = new QueryParamsModel(
+            this.filter,
+            'asc',
+            'FirstName', // sortField bắt buộc
+            0,
+            1000 // Lấy tất cả dữ liệu
+        );
+
+        this.NamHocService.exportExcel(queryParams)
+            .pipe(
+                finalize(() => {
+
+                })
+            )
+            .subscribe({
+                next: (blob: Blob) => {
+                    // Tạo file name với timestamp
+                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+                    const fileName = `Danh_Sach_Nam_Hoc_${timestamp}.xlsx`;
+
+                    // Download file
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = fileName;
+                    link.click();
+                    window.URL.revokeObjectURL(url);
+
+                    // Hiển thị thông báo thành công
+                    this.layoutUtilsService.showSuccess(
+                        this.translate.instant('EXCEL.xuatexcelthanhcong')
+                    );
+                },
+                error: (error) => {
+                    console.error('Export error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: this.translate.instant('COMMON.error'),
+                        text: error?.error?.error?.message || 'Có lỗi xảy ra khi xuất Excel',
+                        confirmButtonText: this.translate.instant('COMMON.dong'),
                     });
-                }
+                },
             });
-        }
+    }
 }
 

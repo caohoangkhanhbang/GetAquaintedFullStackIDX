@@ -14,7 +14,7 @@ namespace SampleCodeAPI.Business
             using (DpsConnection cnn = new DpsConnection(connect))
             {
                 SqlConditions Conds = new SqlConditions();
-                string sqlq = "", orderByStr = " TenKhoaHoc ", whereStr = " Disable = 0 ";
+                string sqlq = "", orderByStr = " TenKhoaHoc ", whereStr = " kh.IsDel = 0 ";
                 Dictionary<string, string> sortableFields = new Dictionary<string, string>
                 {
                     { "TenKhoaHoc", "TenKhoaHoc"},
@@ -30,7 +30,7 @@ namespace SampleCodeAPI.Business
                     whereStr += " and (TenKhoaHoc like @kw or NamHoc like @kw)";
                     Conds.Add("kw", "%" + query.filter["keyword"] + "%");
                 }
-                sqlq = $@"select count(*) AS tong from (select * from DanhSachKhoaHoc
+                sqlq = $@"select count(*) AS tong from (select * from DanhSachKhoaHoc kh 
                                   where {whereStr} ) as a";
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
                 var total = int.Parse(dt.Rows[0]["tong"].ToString());
@@ -62,13 +62,13 @@ namespace SampleCodeAPI.Business
 
                     if (query.page > 1)
                     {
-                        sqlq = $@"  select DanhSachKhoaHoc.* from DanhSachKhoaHoc
+                        sqlq = $@"  select nh.NamHoc as TenNamHoc, kh.* from DanhSachKhoaHoc  kh left join DanhSachNamHoc nh on kh.NamHoc = nh.id 
                                   where {whereStr} order by {orderByStr} 
                                   OFFSET @firstRecord ROWS FETCH NEXT @record ROWS ONLY";
                     }
                     else if (query.page == 1)
                     {
-                        sqlq = $@"  select top(@record) DanhSachKhoaHoc.* from DanhSachKhoaHoc
+                        sqlq = $@"  select top(@record) nh.NamHoc as TenNamHoc, kh.* from DanhSachKhoaHoc  kh left join DanhSachNamHoc nh on kh.NamHoc = nh.id 
                                   where {whereStr} order by {orderByStr} ";
 
                     }
@@ -87,7 +87,8 @@ namespace SampleCodeAPI.Business
                                 CachViet = !String.IsNullOrEmpty(r["CachViet"].ToString())? r["CachViet"].ToString(): "",
                                 Disable = r["Disable"] != DBNull.Value ? Boolean.Parse(r["Disable"].ToString()): (bool?)null,
                                 CreatedBy = r["CreatedBy"] != DBNull.Value ? r["CreatedBy"].ToString() : "",
-                                CreatedDate = r["CreatedDate"] != DBNull.Value ? DateTime.Parse(r["CreatedDate"].ToString()) : (DateTime?)null,                              
+                                CreatedDate = r["CreatedDate"] != DBNull.Value ? DateTime.Parse(r["CreatedDate"].ToString()) : (DateTime?)null,               
+                                TenNamHoc = r["TenNamHoc"] != DBNull.Value ? r["TenNamHoc"].ToString() : ""
                             }).ToList();
 
                 model.data = data;
@@ -181,6 +182,7 @@ namespace SampleCodeAPI.Business
                 val.Add("NamHoc", data.NamHoc);
                 val.Add("CachViet", (object)data.CachViet ?? DBNull.Value);
                 val.Add("Disable", (object)data.Disable ?? DBNull.Value);
+                val.Add("IsDel", false);
                 val.Add("CreatedBy",  loginData.UserName);
                 val.Add("CreatedDate", DateTime.UtcNow);
 
@@ -238,6 +240,7 @@ namespace SampleCodeAPI.Business
                 val.Add("NamHoc", data.NamHoc);
                 val.Add("CachViet", (object)data.CachViet ?? DBNull.Value);
                 val.Add("Disable", (object)data.Disable ?? DBNull.Value);
+                val.Add("IsDel", false);
                 val.Add("UpdatedDate", DateTime.UtcNow);
                 val.Add("UpdatedBy",  loginData.UserName);
 
@@ -269,7 +272,7 @@ namespace SampleCodeAPI.Business
             using (DpsConnection cnn = new DpsConnection(connect))
             {
                 Hashtable val = new Hashtable();
-                val.Add("Disable", 1);
+                val.Add("IsDel", 1);
                 val.Add("DeletedDate", DateTime.UtcNow);
                 val.Add("DeletedBy",  loginData.UserName);
 
@@ -301,7 +304,7 @@ namespace SampleCodeAPI.Business
             using (DpsConnection cnn = new DpsConnection(_ConnectionString))
             {
                 SqlConditions conds = new SqlConditions();
-                string sql = "select * from DanhSachKhoaHoc where TenKhoaHoc = @Code  and Disable=0";
+                string sql = "select * from DanhSachKhoaHoc where TenKhoaHoc = @Code  and IsDel=0";
                 conds.Add("Code", name);
 
 

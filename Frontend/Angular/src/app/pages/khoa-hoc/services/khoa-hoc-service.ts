@@ -5,11 +5,14 @@ import { environment } from 'src/environments/environment';
 import { HttpUtilsService } from 'src/app/_metronic/core/utils/http-utils.service';
 import { QueryParamsModel } from 'src/app/_metronic/core/models/query-models/query-params.model';
 import { QueryResultsModel } from 'src/app/_metronic/core/models/query-models/query-results.model';
-import { KhoaHocModel } from '../model/khoa-hoc.model'; 
+import { KhoaHocModel } from '../model/khoa-hoc.model';
 
 
 const API_ROOT_URL = environment.HOST_TUTORIAL_API + '/api/khoahoc';
 const API_URL = environment.HOST_JEEHR_API + '/' + environment.apiUrl;
+const API_SHARE = environment.HOST_TUTORIAL_API + '/api/share';
+
+
 @Injectable({
     providedIn: 'root'
 })
@@ -75,6 +78,12 @@ export class KhoaHocService {
         const url = API_ROOT_URL + `/delete/${id}`;
         console.log('API_ROOT_URL', API_ROOT_URL);
         return this.http.delete<any>(url, { headers: httpHeaders });
+    }
+
+    getListNamHoc(): Observable<any> {
+        const httpHeaders = this.httpUtils.getHTTPHeaders();
+        const url = API_SHARE + `/list-nam-hoc`;
+        return this.http.get<any>(url, { headers: httpHeaders });
     }
 
 }

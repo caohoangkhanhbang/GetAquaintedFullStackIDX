@@ -53,14 +53,16 @@
                     <th mat-header-cell *matHeaderCellDef mat-sort-header style="flex: 0 0 30%">
                         {{ 'KHOAHOC.namhoc' | translate }}
                     </th>
-                    <td mat-cell *matCellDef="let item" style="flex: 0 0 30%">{{item.NamHoc}}</td>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 30%">{{item.TenNamHoc}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="HienThi">
                     <th mat-header-cell *matHeaderCellDef style="flex: 0 0 15%">
                         {{ 'KHOAHOC.hienthi' | translate }}
                     </th>
-                    <td mat-cell *matCellDef="let item" style="flex: 0 0 15%">{{item.HienThi}}</td>
+                    <td mat-cell *matCellDef="let item" style="flex: 0 0 15%">
+                        <input type="checkbox" name="" id="" [checked]="item.Disable" onclick="return false;">
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="CachViet">
