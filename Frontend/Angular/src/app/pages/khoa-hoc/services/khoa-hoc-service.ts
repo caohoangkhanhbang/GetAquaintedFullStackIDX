@@ -9,7 +9,6 @@ import { KhoaHocModel } from '../model/khoa-hoc.model';
 
 
 const API_ROOT_URL = environment.HOST_TUTORIAL_API + '/api/khoahoc';
-const API_URL = environment.HOST_JEEHR_API + '/' + environment.apiUrl;
 const API_SHARE = environment.HOST_TUTORIAL_API + '/api/share';
 
 
@@ -84,6 +83,18 @@ export class KhoaHocService {
         const httpHeaders = this.httpUtils.getHTTPHeaders();
         const url = API_SHARE + `/list-nam-hoc`;
         return this.http.get<any>(url, { headers: httpHeaders });
+    }
+
+    exportExcel(queryParams: QueryParamsModel): Observable<Blob> {
+        const httpHeaders = this.httpUtils.getHTTPHeaders();
+        const httpParams = this.httpUtils.getFindHTTPParams(queryParams);
+        const url = API_ROOT_URL + '/export-excel';
+
+        return this.http.get<Blob>(url, {
+            headers: httpHeaders,
+            params: httpParams,
+            responseType: 'blob' as 'json'
+        });
     }
 
 }

@@ -104,6 +104,9 @@ export const locale = {
       cachviet: "Cách viết",
       nguoitao: "Người tạo",
       ngaytao: "Ngày tạo"
+    },
+    EXCEL: {
+      xuatexcelthanhcong: "Xuất excel thành công!"
     }
   },
 };

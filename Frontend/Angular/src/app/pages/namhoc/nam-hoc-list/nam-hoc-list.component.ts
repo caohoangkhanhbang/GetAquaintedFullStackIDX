@@ -45,6 +45,7 @@ export class NamHocTableListComponent implements OnInit {
     itemModel: any;
     displayedColumns = ['STT', 'NamHoc', 'NienHoc', 'HienThi', 'NguoiTao', 'NgayTao', 'actions'];
     filter: any = {};
+    queryNow: QueryParamsModel;
 
     @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -89,6 +90,8 @@ export class NamHocTableListComponent implements OnInit {
             this.paginator.pageIndex,
             this.paginator.pageSize
         );
+
+        this.queryNow = queryParams;
 
         if (this.paginator.pageSize)
             this.pageSize = this.paginator.pageSize;
@@ -185,6 +188,7 @@ export class NamHocTableListComponent implements OnInit {
             this.loadDataList();
         });
     }
+
     getHeight(): any {
         let tmp_height = 0;
         tmp_height = window.innerHeight - 382;
@@ -220,51 +224,51 @@ export class NamHocTableListComponent implements OnInit {
     }
 
     exportExcel() {
+        if (this.dataSource) {
+            this.NamHocService.exportExcel(this.queryNow)
+                .pipe(
+                    finalize(() => {
 
-        // Tạo queryParams với filter hiện tại
-        const queryParams = new QueryParamsModel(
-            this.filter,
-            'asc',
-            'FirstName', // sortField bắt buộc
-            0,
-            1000 // Lấy tất cả dữ liệu
-        );
+                    })
+                )
+                .subscribe({
+                    next: (blob: Blob) => {
+                        // Tạo file name với timestamp
+                        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+                        const fileName = `Danh_Sach_Nam_Hoc_${timestamp}.xlsx`;
 
-        this.NamHocService.exportExcel(queryParams)
-            .pipe(
-                finalize(() => {
+                        // Download file
+                        const url = window.URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = fileName;
+                        link.click();
+                        window.URL.revokeObjectURL(url);
 
-                })
-            )
-            .subscribe({
-                next: (blob: Blob) => {
-                    // Tạo file name với timestamp
-                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-                    const fileName = `Danh_Sach_Nam_Hoc_${timestamp}.xlsx`;
-
-                    // Download file
-                    const url = window.URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = fileName;
-                    link.click();
-                    window.URL.revokeObjectURL(url);
-
-                    // Hiển thị thông báo thành công
-                    this.layoutUtilsService.showSuccess(
-                        this.translate.instant('EXCEL.xuatexcelthanhcong')
-                    );
-                },
-                error: (error) => {
-                    console.error('Export error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: this.translate.instant('COMMON.error'),
-                        text: error?.error?.error?.message || 'Có lỗi xảy ra khi xuất Excel',
-                        confirmButtonText: this.translate.instant('COMMON.dong'),
-                    });
-                },
+                        // Hiển thị thông báo thành công
+                        this.layoutUtilsService.showSuccess(
+                            this.translate.instant('EXCEL.xuatexcelthanhcong')
+                        );
+                    },
+                    error: (error) => {
+                        console.error('Export error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: this.translate.instant('COMMON.error'),
+                            text: error?.error?.error?.message || 'Có lỗi xảy ra khi xuất Excel',
+                            confirmButtonText: this.translate.instant('COMMON.dong'),
+                        });
+                    },
+                });
+        }
+        else {
+            Swal.fire({
+                title: "Thông báo!",
+                icon: "question",
+                text: "Không có dữ liệu để xuất excel",
+                confirmButtonText: this.translate.instant('COMMON.dong'),
             });
+        }
     }
 }
 

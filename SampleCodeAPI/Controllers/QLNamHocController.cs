@@ -130,7 +130,7 @@ namespace SampleCodeAPI.Controllers
             if (loginData == null)
                 return Unauthorized(JsonResultCommon.DangNhap());
 
-            const string message = "Xuất danh sách điểm quá trình ra Excel";
+            const string message = "Xuất danh sách năm học ra Excel";
             try
             {
                 string connect = _connection.getConnectionString(loginData.customerID);

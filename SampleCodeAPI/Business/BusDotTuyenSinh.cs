@@ -30,7 +30,7 @@ namespace SampleCodeAPI.Business
                 }
                 if (!string.IsNullOrEmpty(query.filter["keyword"]))
                 {
-                    whereStr += " and (Code like @kw or Title like @kw)";
+                    whereStr += " and (dts.TenDotTS like @kw or dts.Dot like @kw or dts.NamHoc like @kw or dts.KhoaHoc like @kw)";
                     Conds.Add("kw", "%" + query.filter["keyword"] + "%");
                 }
                 sqlq = $@"select count(*) AS tong from (select * from DotTuyenSinh dts

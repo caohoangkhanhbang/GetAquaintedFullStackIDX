@@ -1,6 +1,7 @@
 ﻿using API_JeeSale.Services;
 using DPSinfra.ConnectionCache;
 using DPSinfra.Kafka;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SampleCodeAPI.Business;
@@ -10,8 +11,11 @@ using SampleCodeAPI.Services;
 
 namespace SampleCodeAPI.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [Route("api/khoahoc")]
     [ApiController]
+    [ApiVersion("1.0")]
+
     public class QLKhoaHocController(IConfiguration configuration, IConnectionCache connectionCache, ILogger<SampleController> logger, IProducer producer, INotifyService notifyService, IBoxEvent boxEvent, MinioObject minioClient, IConnectionService connectionService) : ControllerBase
     {
         private IConfiguration _configuration = configuration;
@@ -114,6 +118,30 @@ namespace SampleCodeAPI.Controllers
             string connect = _connection.getConnectionString(loginData.customerID);
             var model = await BusKhoaHoc.Delete(Id, connect, loginData);
             return model;
+        }
+
+        //Hàm xuất excel
+        [HttpGet]
+        [Route("export-excel")]
+        public async Task<IActionResult> ExportExcel([FromQuery] QueryParams query)
+        {
+            var loginData = _ulities.GetUserByHeader(HttpContext.Request.Headers);
+            if (loginData == null)
+                return Unauthorized(JsonResultCommon.DangNhap());
+
+            const string message = "Xuất danh sách khóa học ra Excel";
+            try
+            {
+                string connect = _connection.getConnectionString(loginData.customerID);
+                byte[] fileBytes = await BusKhoaHoc.ExportToExcel(loginData, query, connect);
+                return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    $"Danh_Sach_Nam_Hoc_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+            }
+            catch (Exception ex)
+            {
+                _logHelper.LogError(loginData.UserName, "QLDiemQuatrinh_ExportExcel", message, ex);
+                return BadRequest(JsonResultCommon.Exception(ex));
+            }
         }
     }
 }

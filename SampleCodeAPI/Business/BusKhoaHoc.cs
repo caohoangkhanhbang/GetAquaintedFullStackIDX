@@ -1,4 +1,8 @@
-﻿using DpsLibs.Data;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DpsLibs.Data;
+using SampleCodeAPI.Classes;
 using SampleCodeAPI.Model;
 using System.Collections;
 using System.Data;
@@ -27,7 +31,7 @@ namespace SampleCodeAPI.Business
                 }
                 if (!string.IsNullOrEmpty(query.filter["keyword"]))
                 {
-                    whereStr += " and (TenKhoaHoc like @kw or NamHoc like @kw)";
+                    whereStr += " and (kh.TenKhoaHoc like @kw or kh.NamHoc like @kw)";
                     Conds.Add("kw", "%" + query.filter["keyword"] + "%");
                 }
                 sqlq = $@"select count(*) AS tong from (select * from DanhSachKhoaHoc kh 
@@ -331,5 +335,87 @@ namespace SampleCodeAPI.Business
                 return false;
             }
         }
+
+        //Hàm xuất excel
+        public static async Task<byte[]> ExportToExcel(UserJWT loginData, QueryParams query, string connect)
+        {
+            // Lấy tất cả dữ liệu (không phân trang)
+            query.more = false;
+            var response = await GetList(query, connect) as BaseModel<object>;
+
+            if (response == null || response.status != 1 || response.data == null)
+                throw new Exception(response?.error?.message ?? "Không lấy được dữ liệu");
+
+            // Parse dữ liệu từ response
+            dynamic data = response.data;
+
+            using var stream = new MemoryStream();
+            using (var document = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook))
+            {
+                var workbookPart = document.AddWorkbookPart();
+                workbookPart.Workbook = new Workbook();
+                var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+
+                var exportExcel = new ExportExcelHelper();
+                var stylesPart = workbookPart.AddNewPart<WorkbookStylesPart>();
+                stylesPart.Stylesheet = exportExcel.GenerateStylesheet03A_CDR();
+                stylesPart.Stylesheet.Save();
+
+                var sheetData = new SheetData();
+                var mergeCells = new MergeCells();
+
+                var cellValues = new Dictionary<string, (string text, uint styleIndex)>
+            {
+                { "A", ("STT", 4U) },
+                { "B", ("Tên khóa học", 4U) },
+                { "C", ("Năm học", 4U) },
+                { "D", ("Cách viết", 4U) },
+                { "E", ("Người tạo", 4U) },
+                { "F", ("Ngày tạo", 4U) },
+            };
+
+                // Tạo Tiêu đề côt cho excel
+                ExcelUtil.BuildExcelHeader(sheetData, mergeCells, cellValues, "Danh Sách Khóa Học");
+
+                //Nơi chưa thông tin nội dung chính
+                uint rowIndex = 6;
+                int stt = 1;
+                foreach (dynamic item in data)
+                {
+                    var dataRow = new Row { RowIndex = rowIndex, Height = 20, CustomHeight = true };
+                    dataRow.AppendChild(new Cell { CellReference = $"A{rowIndex}", CellValue = new CellValue(stt), DataType = CellValues.Number, StyleIndex = 11U });
+                    dataRow.AppendChild(new Cell { CellReference = $"B{rowIndex}", CellValue = new CellValue(item.TenKhoaHoc?.ToString() ?? ""), DataType = CellValues.String, StyleIndex = 11U });
+                    dataRow.AppendChild(new Cell { CellReference = $"C{rowIndex}", CellValue = new CellValue(item.TenNamHoc?.ToString() ?? ""), DataType = CellValues.String, StyleIndex = 11U });
+                    dataRow.AppendChild(new Cell { CellReference = $"D{rowIndex}", CellValue = new CellValue(item.CachViet?.ToString() ?? ""), DataType = CellValues.String, StyleIndex = 11U });
+                    dataRow.AppendChild(new Cell { CellReference = $"E{rowIndex}", CellValue = new CellValue(item.CreatedBy?.ToString() ?? ""), DataType = CellValues.String, StyleIndex = 11U });
+                    dataRow.AppendChild(new Cell { CellReference = $"F{rowIndex}", CellValue = new CellValue(item.CreatedDate?.ToString() ?? ""), DataType = CellValues.String, StyleIndex = 11U });
+                    sheetData.AppendChild(dataRow);
+                    stt++;
+                    rowIndex++;
+                }
+
+                // Insert logo
+                var drawingsPart = ExcelUtil.InsertLogo(worksheetPart, mergeCells);
+
+                // Setup worksheet
+                var worksheet = new Worksheet();
+                worksheet.Append(ExcelUtil.CreateColumns());
+                worksheet.Append(sheetData);
+                mergeCells.Count = (uint)mergeCells.ChildElements.Count;
+                worksheet.Append(mergeCells);
+                if (drawingsPart != null)
+                    worksheet.Append(new Drawing { Id = worksheetPart.GetIdOfPart(drawingsPart) });
+
+                worksheetPart.Worksheet = worksheet;
+                worksheetPart.Worksheet.Save();
+
+                var sheets = document.WorkbookPart!.Workbook.AppendChild(new Sheets());
+                sheets.Append(new Sheet { Id = document.WorkbookPart.GetIdOfPart(worksheetPart), SheetId = 1, Name = "DiemQuaTrinh" });
+                workbookPart.Workbook.Save();
+            }
+
+            return stream.ToArray();
+        }
+
     }
 }

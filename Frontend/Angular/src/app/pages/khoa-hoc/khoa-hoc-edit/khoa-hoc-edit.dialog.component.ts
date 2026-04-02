@@ -81,7 +81,7 @@ export class KhoaHocEditDialogComponent implements OnInit {
         this.getListNamHoc()
         this.itemForm = this.fb.group({
             TenKhoaHoc: [this.item.TenKhoaHoc || '', [Validators.required]],
-            NamHoc: [this.item.NamHoc || 0, [Validators.required]],
+            NamHoc: [this.item.NamHoc || '', [Validators.required]],
             CachViet: [this.item.CachViet || ''],
             Disable: [this.item.Disable || false]
         });

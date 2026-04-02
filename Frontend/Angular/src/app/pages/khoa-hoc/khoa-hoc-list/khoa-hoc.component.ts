@@ -19,6 +19,7 @@ import { TokenStorage } from 'src/app/modules/auth/services/token-storage.servic
 import { MatPaginatorIntlCustom } from 'src/app/modules/auth/services/config-mat-page';
 import { KhoaHocEditDialogComponent } from '../khoa-hoc-edit/khoa-hoc-edit.dialog.component';
 import { LayoutUtilsService } from 'src/app/_metronic/core/utils/layout-utils.service';
+import { finalize } from "rxjs";
 
 @Component({
     selector: 'app-khoa-hoc-list',
@@ -42,6 +43,9 @@ export class KhoaHocTableListComponent implements OnInit, OnDestroy {
     @ViewChild(MatSort, { static: true }) sort: MatSort;
     @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
     public pageSize: number = 10;
+    queryNow: QueryParamsModel;
+
+
     constructor() {
         this.tokenStorage.getPageSize().subscribe(res => {
             this.pageSize = +res;
@@ -84,8 +88,11 @@ export class KhoaHocTableListComponent implements OnInit, OnDestroy {
             this.paginator.pageSize
         );
 
+        this.queryNow = queryParams;
+
         if (this.paginator.pageSize)
             this.pageSize = this.paginator.pageSize;
+
 
         this.dataSource.loadList(queryParams);
 
@@ -215,6 +222,55 @@ export class KhoaHocTableListComponent implements OnInit, OnDestroy {
         tmp_height = window.innerHeight - 382;
         return tmp_height + 'px';
     }
+
+    exportExcel() {
+        if (this.dataSource) {
+            this.KhoaHocService.exportExcel(this.queryNow)
+                .pipe(
+                    finalize(() => {
+
+                    })
+                )
+                .subscribe({
+                    next: (blob: Blob) => {
+                        // Tạo file name với timestamp
+                        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+                        const fileName = `Danh_Sach_Khoa_Hoc_${timestamp}.xlsx`;
+
+                        // Download file
+                        const url = window.URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = fileName;
+                        link.click();
+                        window.URL.revokeObjectURL(url);
+
+                        // Hiển thị thông báo thành công
+                        this.layoutUtilsService.showSuccess(
+                            this.translate.instant('EXCEL.xuatexcelthanhcong')
+                        );
+                    },
+                    error: (error) => {
+                        console.error('Export error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: this.translate.instant('COMMON.error'),
+                            text: error?.error?.error?.message || 'Có lỗi xảy ra khi xuất Excel',
+                            confirmButtonText: this.translate.instant('COMMON.dong'),
+                        });
+                    },
+                });
+        }
+        else {
+            Swal.fire({
+                title: "Thông báo!",
+                icon: "question",
+                text: "Không có dữ liệu để xuất excel",
+                confirmButtonText: this.translate.instant('COMMON.dong'),
+            });
+        }
+    }
+
 }
 
 
