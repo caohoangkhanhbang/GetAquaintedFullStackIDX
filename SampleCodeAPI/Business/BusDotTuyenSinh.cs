@@ -139,7 +139,7 @@ namespace SampleCodeAPI.Business
                 SqlConditions Conds = new SqlConditions();
                 string sqlq = "";
                 sqlq = $@" select * from DotTuyenSinh
-                                  where id=@id ";
+                                  where id=@id  isDel = 0";
                 Conds.Add("id", id);
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
                 if (cnn.LastError != null || dt == null)
