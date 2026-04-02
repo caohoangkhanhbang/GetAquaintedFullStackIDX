@@ -125,7 +125,7 @@ export class NamHocEditDialogComponent implements OnInit {
         const namHoc = this.itemForm.get("NamHoc")?.value;
         if (namHoc !== null && namHoc !== undefined && namHoc !== '') {
             if (Number(namHoc) <= 0) {
-                this.NotificationCustom("Số thứ tự phải lớn hơn không!");
+                this.NotificationCustom("Năm học phải lớn hơn không!");
                 return;
             }
         }
