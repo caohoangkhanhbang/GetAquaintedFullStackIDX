@@ -389,7 +389,7 @@ namespace SampleCodeAPI.Business
                     dataRow.AppendChild(new Cell { CellReference = $"B{rowIndex}" , CellValue = new CellValue(item.NamHoc?.ToString() ?? ""), DataType = CellValues.String, StyleIndex = 11U });
                     dataRow.AppendChild(new Cell { CellReference = $"C{rowIndex}", CellValue = new CellValue(item.NienHoc?.ToString() ?? ""), DataType = CellValues.String, StyleIndex = 11U });
                     dataRow.AppendChild(new Cell { CellReference = $"D{rowIndex}", CellValue = new CellValue(item.CreatedBy?.ToString() ?? ""), DataType = CellValues.String, StyleIndex = 11U });
-                    dataRow.AppendChild(new Cell { CellReference = $"E{rowIndex}", CellValue = new CellValue(item.CreatedDate?.ToString() ?? ""), DataType = CellValues.String, StyleIndex = 11U });
+                    dataRow.AppendChild(new Cell { CellReference = $"E{rowIndex}", CellValue = new CellValue(item.CreatedDate?.ToString("dd/MM/yyyy") ?? ""), DataType = CellValues.String, StyleIndex = 11U });
                     sheetData.AppendChild(dataRow);
                     stt++;
                     rowIndex++;

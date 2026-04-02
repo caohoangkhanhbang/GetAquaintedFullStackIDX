@@ -17,7 +17,7 @@ namespace SampleCodeAPI.Business
 
                 SqlConditions Conds = new SqlConditions();
                 string sqlq = "";
-                sqlq = $@"select * from DanhSachNamHoc where isDel = 0";
+                sqlq = $@"select * from DanhSachNamHoc where isDel = 0 and Disable = 1";
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
                 if (cnn.LastError != null || dt == null)
                 {
@@ -62,7 +62,7 @@ namespace SampleCodeAPI.Business
 
                 SqlConditions Conds = new SqlConditions();
                 string sqlq = "";
-                sqlq = $@"select * from DanhSachKhoaHoc where IsDel = 0";
+                sqlq = $@"select * from DanhSachKhoaHoc where IsDel = 0  and Disable = 1";
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
                 if (cnn.LastError != null || dt == null)
                 {
