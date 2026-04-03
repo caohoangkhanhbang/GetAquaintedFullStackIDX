@@ -17,7 +17,12 @@ namespace SampleCodeAPI.Business
 
                 SqlConditions Conds = new SqlConditions();
                 string sqlq = "";
-                sqlq = $@"select * from DanhSachNamHoc where isDel = 0 and Disable = 1";
+                sqlq = @"
+                        SELECT *
+                        FROM DanhSachNamHoc 
+                        WHERE DATEDIFF(YEAR, CreatedDate, GETDATE()) <= 10 and isDel = 0 and Disable = 1
+                        ORDER BY CreatedDate DESC;
+                        ";
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
                 if (cnn.LastError != null || dt == null)
                 {
@@ -62,7 +67,12 @@ namespace SampleCodeAPI.Business
 
                 SqlConditions Conds = new SqlConditions();
                 string sqlq = "";
-                sqlq = $@"select * from DanhSachKhoaHoc where IsDel = 0  and Disable = 1";
+                sqlq = $@"
+                        SELECT *
+                        FROM DanhSachKHoaHoc 
+                        WHERE DATEDIFF(YEAR, CreatedDate, GETDATE()) <= 10 and isDel = 0 and Disable = 1
+                        ORDER BY CreatedDate DESC;
+                        ";
                 DataTable dt = cnn.CreateDataTable(sqlq, Conds);
                 if (cnn.LastError != null || dt == null)
                 {

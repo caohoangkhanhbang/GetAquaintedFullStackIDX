@@ -188,7 +188,7 @@ namespace SampleCodeAPI.Business
             using (DpsConnection cnn = new DpsConnection(connect))
             {
                 val.Add("NamHoc", data.NamHoc);
-                val.Add("NienHoc", data.NienHoc);
+                val.Add("NienHoc", data.NienHoc.Trim());
                 val.Add("Disable", (object)data.Disable ?? DBNull.Value);
                 val.Add("CreatedBy", loginData.UserName);
                 val.Add("CreatedDate", DateTime.UtcNow);
@@ -245,7 +245,7 @@ namespace SampleCodeAPI.Business
             using (DpsConnection cnn = new DpsConnection(connect))
             {
                 val.Add("NamHoc", data.NamHoc);
-                val.Add("NienHoc", data.NienHoc);
+                val.Add("NienHoc", data.NienHoc.Trim());
                 val.Add("Disable", (object)data.Disable ?? DBNull.Value);
                 val.Add("UpdatedDate", DateTime.UtcNow);
                 val.Add("UpdatedBy", loginData.UserName);
