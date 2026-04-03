@@ -237,7 +237,7 @@ namespace SampleCodeAPI.Business
             {
                 val.Add("NamHoc", data.NamHoc);
                 val.Add("Dot", data.Dot);
-                val.Add("TenDotTS", data.TenDotTS);
+                val.Add("TenDotTS", data.TenDotTS.Trim());
                 val.Add("KhoaHoc", data.KhoaHoc);
                 val.Add("ThoiGianNhanHSTuNgay", (object)data.ThoiGianNhanHSTuNgay??DBNull.Value);
                 val.Add("ThoiGianNhanHSDenNgay", (object)data.ThoiGianNhanHSDenNgay??DBNull.Value);
@@ -245,7 +245,7 @@ namespace SampleCodeAPI.Business
                 val.Add("ThoiGianLayHSTuNgay", (object)data.ThoiGianLayHSTuNgay??DBNull.Value);
                 val.Add("ThoiGianLayHSDenNgay", (object)data.ThoiGianLayHSDenNgay??DBNull.Value);
                 val.Add("NgayNhapHocDK", (object)data.NgayNhapHocDK??DBNull.Value);
-                val.Add("GhiChu", data.GhiChu);
+                val.Add("GhiChu", data.GhiChu.Trim());
                 val.Add("HienThi", data.HienThi);
                 val.Add("KichHoat", data.KichHoat);
                 val.Add("CreatedBy", loginData.customdata.jeeAccount.customerID);
@@ -307,7 +307,7 @@ namespace SampleCodeAPI.Business
             {
                 val.Add("NamHoc", data.NamHoc);
                 val.Add("Dot", data.Dot);
-                val.Add("TenDotTS", data.TenDotTS);
+                val.Add("TenDotTS", data.TenDotTS.Trim());
                 val.Add("KhoaHoc", data.KhoaHoc);
                 val.Add("ThoiGianNhanHSTuNgay", (object)data.ThoiGianNhanHSTuNgay ?? DBNull.Value);
                 val.Add("ThoiGianNhanHSDenNgay", (object)data.ThoiGianNhanHSDenNgay ?? DBNull.Value);
@@ -315,7 +315,7 @@ namespace SampleCodeAPI.Business
                 val.Add("ThoiGianLayHSTuNgay", (object)data.ThoiGianLayHSTuNgay ?? DBNull.Value);
                 val.Add("ThoiGianLayHSDenNgay", (object)data.ThoiGianLayHSDenNgay ?? DBNull.Value);
                 val.Add("NgayNhapHocDK", (object)data.NgayNhapHocDK ?? DBNull.Value);
-                val.Add("GhiChu", (object)data.GhiChu ?? DBNull.Value);
+                val.Add("GhiChu", (object)data.GhiChu.Trim() ?? DBNull.Value);
                 val.Add("HienThi", data.HienThi);
                 val.Add("KichHoat", data.KichHoat);
                 val.Add("UpdatedDate", DateTime.UtcNow);

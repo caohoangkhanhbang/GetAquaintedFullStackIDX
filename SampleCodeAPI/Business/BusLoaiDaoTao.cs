@@ -184,10 +184,10 @@ namespace SampleCodeAPI.Business
 
             using (DpsConnection cnn = new DpsConnection(connect))
             {
-                val.Add("MaLoaiDT", data.MaLoaiDT);
-                val.Add("TenLoaiDT", data.TenLoaiDT);
-                val.Add("TenTiengAnh", (object)data.TenTiengAnh??DBNull.Value);
-                val.Add("NoiDung", (object)data.NoiDung??DBNull.Value);
+                val.Add("MaLoaiDT", data.MaLoaiDT.Trim());
+                val.Add("TenLoaiDT", data.TenLoaiDT.Trim());
+                val.Add("TenTiengAnh", (object)data.TenTiengAnh.Trim()??DBNull.Value);
+                val.Add("NoiDung", (object)data.NoiDung.Trim()??DBNull.Value);
                 if(data.SoThuTu <= 0)
                 {
                     val.Add("SoThuTu", DBNull.Value);
@@ -196,7 +196,7 @@ namespace SampleCodeAPI.Business
                 {
                     val.Add("SoThuTu", data.SoThuTu);
                 }
-                val.Add("GhiChu", data.GhiChu);
+                val.Add("GhiChu", data.GhiChu.Trim());
                 val.Add("IsDel", false);
                 val.Add("CreatedBy", loginData.customdata.jeeAccount.customerID);
                 val.Add("CreatedDate", DateTime.UtcNow);
@@ -254,10 +254,10 @@ namespace SampleCodeAPI.Business
             }
             using (DpsConnection cnn = new DpsConnection(connect))
             {
-                val.Add("MaLoaiDT", data.MaLoaiDT);
-                val.Add("TenLoaiDT", data.TenLoaiDT);
-                val.Add("TenTiengAnh", data.TenTiengAnh);
-                val.Add("NoiDung", data.NoiDung);
+                val.Add("MaLoaiDT", data.MaLoaiDT.Trim());
+                val.Add("TenLoaiDT", data.TenLoaiDT.Trim());
+                val.Add("TenTiengAnh", data.TenTiengAnh.Trim());
+                val.Add("NoiDung", data.NoiDung.Trim());
                 if (data.SoThuTu <= 0)
                 {
                     val.Add("SoThuTu", DBNull.Value);
@@ -266,7 +266,7 @@ namespace SampleCodeAPI.Business
                 {
                     val.Add("SoThuTu", data.SoThuTu);
                 }
-                val.Add("GhiChu", data.GhiChu);
+                val.Add("GhiChu", data.GhiChu.Trim());
                 val.Add("UpdatedDate", DateTime.UtcNow);
                 val.Add("UpdatedBy", loginData.customdata.jeeAccount.customerID);
 

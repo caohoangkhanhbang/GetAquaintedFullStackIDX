@@ -182,7 +182,7 @@ namespace SampleCodeAPI.Business
 
             using (DpsConnection cnn = new DpsConnection(connect))
             {
-                val.Add("TenKhoaHoc", data.TenKhoaHoc);
+                val.Add("TenKhoaHoc", data.TenKhoaHoc.Trim());
                 val.Add("NamHoc", data.NamHoc);
                 val.Add("CachViet", (object)data.CachViet ?? DBNull.Value);
                 val.Add("Disable", (object)data.Disable ?? DBNull.Value);
@@ -240,7 +240,7 @@ namespace SampleCodeAPI.Business
             }
             using (DpsConnection cnn = new DpsConnection(connect))
             {
-                val.Add("TenKhoaHoc", data.TenKhoaHoc);
+                val.Add("TenKhoaHoc", data.TenKhoaHoc.Trim());
                 val.Add("NamHoc", data.NamHoc);
                 val.Add("CachViet", (object)data.CachViet ?? DBNull.Value);
                 val.Add("Disable", (object)data.Disable ?? DBNull.Value);
